@@ -15,9 +15,29 @@ let hg = {
             return false
         }
     },
-    minigames: {
+    minigames: [
+        {
+            name: 'Hub',
+            id: 'hub',
+            desc: 'hgHub',
+            on_enter: function(player) {
+                player.teleport({
+                    x: 0,
+                    y: 1,
+                    z: 0
+                }, {
+                    facingLocation: {
+                        x: 0,
+                        y: 2,
+                        z: 100
+                    }
+                })
+            },
+            on_tick: function(player) {
 
-    },
+            }
+        }
+    ],
     debug: {
         run_thru: function(v) {
             return eval(v);
@@ -58,8 +78,8 @@ let hg = {
                     b = a[0]?.trim()?.toLowerCase(),
                     c = a[1]?.trim()?.toLowerCase()
 
-                for (let i = 0; i < 256; i++) { // clear the chat by sending a bunch of empty messages
-                    s.world.sendMessage('');
+                for (let i = 0; i < 100; i++) { // clear the chat by sending a bunch of empty messages
+                    s.world.sendMessage(' ');
                 }
                 s.world.sendMessage(`\xa7i\xa7o${player.name} has cleared the chat.`);
             }
@@ -125,16 +145,45 @@ let hg = {
                         cmd.func(a, e.sender) // run the command
                     } else
                         e.sender.sendMessage(`\xa7cNo such command \xa7f\'!\xa7c${b.replace(hg.command_prefix, '')}\xa7f\'\xa7f!`); // send a message to the player that the command doesn't exist
-                } else
-                    s.world.sendMessage(`${e.sender.name} \xa7i»\xa7r ${e.message}`) // put a new one in it's place
-            }
+                } else {
+                    // 100 max characters
+                    if (e.message.length > 100) {
+                        e.sender.sendMessage(`\xa7cYou can\'t send a message that long\xa7f! \xa7f(\xa7c${e.message.length} \xa7f>\xa7c 100\xa7f)`)
+                        return;
+                    } 
+                    // makes it so you can't use §k in chat
+                    if (e.message.includes('\xa7k')) {
+                        e.sender.sendMessage(`\xa7cYou can\'t use that formatting code in chat\xa7f!`)
+                        return;
+                    }
+
+                    s.world.sendMessage(`${e.sender.name} \xa7i»\xa7r ${e.message}`) // send the message globally
+                }
+            },
         },
         after_events: {
-
+            playerSpawn: function(e) {
+                // runs when a player spawns
+                let player = e.player;
+                    player.sendMessage(`\xa7bWelcome to HyperGames NCB\xa7f! \xa7i- \xa7f(\xa7b${hg.ver}\xa7f)`);
+                let game = hg.minigames.find(g => g.id === 'hub');
+                game.on_enter(player); // teleport the player to the hub
+            }
         }
     },
     on_tick: function() {
-        // runs every game tick
+        s.system.runInterval(() => {
+            // runs every game tick
+
+            for (let player of s.world.getPlayers()) {
+                player.runCommand(`title @a times 0 60 20`); // set a scoreboard value for the player
+                player.onScreenDisplay.setActionBar(`hypergames - ${hg.ver}`)
+            }
+
+            for (let game of hg.minigames) {
+                game.on_tick();
+            }
+        })
     },
     on_load: function() {
         // runs when the script is loaded
@@ -150,4 +199,5 @@ s.world.afterEvents.worldLoad.subscribe(() => {
         s.world.afterEvents[key].subscribe(hg.listeners.after_events[key]);
     }
     hg.on_load();
+    hg.on_tick();
 })
