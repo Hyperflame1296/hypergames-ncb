@@ -19,12 +19,28 @@ let hg = {
         {
             name: 'Hub',
             id: 'hub',
-            desc: 'hgHub',
+            permissions: {
+                place_block: false,
+                break_block: false,
+                interact_with_block: false,
+            },
+            desc: 'hypergames hub',
+            npcs: [
+                {
+                    text: 'test npc',
+                    skin: 20,
+                    location: {
+                        x: -10,
+                        y: 1,
+                        z: 10
+                    }
+                }
+            ],
             on_enter: function(player) {
                 player.teleport({
-                    x: 0,
+                    x: 0.5,
                     y: 1,
-                    z: 0
+                    z: 0.5
                 }, {
                     facingLocation: {
                         x: 0,
@@ -32,6 +48,13 @@ let hg = {
                         z: 100
                     }
                 })
+                // add & remove tags
+                for (let tag of player.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        player.removeTag(tag);
+                    }
+                }
+                player.addTag('hgncb:minigame.hub');
             },
             on_tick: function(player) {
 
@@ -58,8 +81,7 @@ let hg = {
                 } else {
                     let msg = '\xa7bCommands\xa7f:'
                     let msgop = '\xa7bOperator Commands\xa7f:'
-                    for (let command of hg.commands) {
-                        if (command.requires_op && !hg.methods.check_op(player)) continue; // skip commands that require op
+                    for (let command of hg.commands.filter(cmd => !cmd.requires_op)) {
                         msg += `\n    \xa7f!\xa7b${command.name} \xa7i- \xa7i\xa7o${command.desc}\xa7r`;
                     }
                     for (let command of hg.commands.filter(cmd => cmd.requires_op)) {
@@ -96,6 +118,7 @@ let hg = {
                 
                 switch (c) {
                     case 'eval':
+                        // evaluate javascript code
                         try {
                             let out = hg.debug.run_thru(input);
                             let res = (function(o) {
@@ -121,7 +144,7 @@ let hg = {
                             })(out)
                             player.sendMessage('» ' + res)
                         } catch (e) {
-                            player.sendMessage(`\xa7cerror: \xa7f${e}`);
+                            player.sendMessage(`\xa7cerror\xa7f: \xa7f${e}`);
                         }
                         break;
                     default:
@@ -142,6 +165,10 @@ let hg = {
 
                     let cmd = hg.commands.find(cmd => `!${cmd.name}` === b) // stupid way of doing this, but it works
                     if (cmd) {
+                        if (cmd.requires_op && !hg.methods.check_op(e.sender)) { // check if the command requires op and if the player is op
+                            e.sender.sendMessage(`\xa7cYou don\'t have permission to use this command\xa7f!`);
+                            return;
+                        }
                         cmd.func(a, e.sender) // run the command
                     } else
                         e.sender.sendMessage(`\xa7cNo such command \xa7f\'!\xa7c${b.replace(hg.command_prefix, '')}\xa7f\'\xa7f!`); // send a message to the player that the command doesn't exist
@@ -160,14 +187,59 @@ let hg = {
                     s.world.sendMessage(`${e.sender.name} \xa7i»\xa7r ${e.message}`) // send the message globally
                 }
             },
+            playerBreakBlock: function(e) {
+                // runs when a player breaks a block
+                let player = e.player;
+                for (let tag of player.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                        if (game && !game.permissions.break_block && player.getGameMode() !== 'Creative') {
+                            e.cancel = true; // cancel the event
+                            player.sendMessage(`\xa7bInfo \xa7i»\xa7r \xa7fYou can\'t break blocks in this area\xa7i.`);
+                            return;
+                        }
+                    }
+                }
+            },
+            playerPlaceBlock: function(e) {
+                // runs when a player places a block
+                let player = e.player;
+                for (let tag of player.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                        if (game && !game.permissions.place_block && player.getGameMode() !== 'Creative') {
+                            e.cancel = true; // cancel the event
+                            player.sendMessage(`\xa7bInfo \xa7i»\xa7r \xa7fYou can\'t place blocks in this area\xa7i.`);
+                            return;
+                        }
+                    }
+                }
+            },
+            playerInteractWithBlock: function(e) {
+                // runs when a player interacts with a block
+                let player = e.player;
+                for (let tag of player.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                        if (game && !game.permissions.interact_with_block && player.getGameMode() !== 'Creative') {
+                            e.cancel = true; // cancel the event
+                            player.sendMessage(`\xa7bInfo \xa7i»\xa7r \xa7fYou can\'t interact with blocks in this area\xa7i.`);
+                            return;
+                        }
+                    }
+                }
+            }
         },
         after_events: {
             playerSpawn: function(e) {
                 // runs when a player spawns
-                let player = e.player;
-                    player.sendMessage(`\xa7bWelcome to HyperGames NCB\xa7f! \xa7i- \xa7f(\xa7b${hg.ver}\xa7f)`);
-                let game = hg.minigames.find(g => g.id === 'hub');
-                game.on_enter(player); // teleport the player to the hub
+                if (e.initialSpawn) {
+                    // sends players who joined the game to the lobby
+                    let player = e.player;
+                        player.sendMessage(`\xa7bWelcome to HyperGames NCB\xa7f! \xa7i- \xa7f(\xa7b${hg.ver}\xa7f)`);
+                    let game = hg.minigames.find(g => g.id === 'hub');
+                    game.on_enter(player); // teleport the player to the hub
+                }
             }
         }
     },
@@ -176,7 +248,7 @@ let hg = {
             // runs every game tick
 
             for (let player of s.world.getPlayers()) {
-                player.runCommand(`title @a times 0 60 20`); // set a scoreboard value for the player
+                player.runCommand(`title @a times 0 60 20`);
                 player.onScreenDisplay.setActionBar(`hypergames - ${hg.ver}`)
             }
 
