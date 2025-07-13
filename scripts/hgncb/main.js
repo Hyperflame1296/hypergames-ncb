@@ -90,10 +90,10 @@ let hg = {
             ]
         },
         RekeneiZsolt:  {
-            level: 1,
+            level: 2,
             text: [
                 '\xa7i[\xa7sOG\xa7i]',
-                '\xa7i[\xa7bModerator\xa7i]'
+                '\xa7i[\xa7aAdmin\xa7i]'
             ]
         },
         greengoblin4791:  {
