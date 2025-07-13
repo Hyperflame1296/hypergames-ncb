@@ -61,16 +61,23 @@ let hg = {
         'Frogger Splash5':  {
             level: 2,
             text: [
+                '\xa7i[\xa7sOG\xa7i]',
                 '\xa7i[\xa7aAdmin\xa7i]'
             ]
         },
         RekeneiZsolt:  {
             level: 1,
             text: [
+                '\xa7i[\xa7sOG\xa7i]',
                 '\xa7i[\xa7bModerator\xa7i]'
             ]
-        }
-
+        },
+        greengoblin4791:  {
+            level: 0,
+            text: [
+                '\xa7i[\xa7sOG\xa7i]'
+            ]
+        },
     },
     minigames: [
         {
@@ -95,19 +102,10 @@ let hg = {
                     link: 'pvp',
                 }
             ],
+            methods: {
+
+            },
             effects: [
-                {
-                    id: 'resistance',
-                    duration: 60,
-                    amplifier: 255,
-                    particles: false
-                },
-                {
-                    id: 'instant_health',
-                    duration: 60,
-                    amplifier: 255,
-                    particles: false
-                },
                 {
                     id: 'night_vision',
                     duration: 220,
@@ -121,6 +119,27 @@ let hg = {
                 z: 0.5
             },
             on_enter: function(player) {
+                for (let tag of player.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                        if (game) {
+                            switch (game.id) {
+                                case 'pvp':
+                                    let in_combat = (s.system.currentTick - (player?.getDynamicProperty('hgncb:pvp.last_hit') ?? 0) < 300)
+                                    if (in_combat) {
+                                        let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (player?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
+                                        
+                                        if (attacker && player && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player') {
+                                            hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, player)
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
                 player.teleport(this.location, {
                     facingLocation: {
                         x: this.location.x,
@@ -145,6 +164,7 @@ let hg = {
                 }
 
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
+                player.runCommand('clear @s[m=!c]')
             }
         },
         {
@@ -159,6 +179,27 @@ let hg = {
             npcs: [
                 
             ],
+            methods: {
+                kill_trade: function(attacker, target) {
+                    if (attacker?.id !== target?.id) {
+                        let attacker_kills  = attacker?.getDynamicProperty('hgncb:pvp.kills') ?? 0
+                        let attacker_deaths = attacker?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
+                        let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills') ?? 0
+                        let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
+                        let attacker_health = attacker?.getComponent('minecraft:health')
+                        let target_health = target?.getComponent('minecraft:health')
+                        attacker?.setDynamicProperty('hgncb:pvp.kills', attacker_kills + 1)
+                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
+                        s.system.run(() => attacker_health.resetToMaxValue())
+                        s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
+                    } else {
+                        let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills') ?? 0
+                        let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
+                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
+                        s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
+                    }
+                }
+            },
             effects: [
                 {
                     id: 'night_vision',
@@ -195,29 +236,43 @@ let hg = {
                 if (!hg.methods.check_op(player)) {
                     player.setGameMode('Survival')
                 }
-
-                player.nameTag = hg.methods.get_rank_text(player) + player.name
+                let health = player.getComponent('minecraft:health')
+                let health_percentage = (health.currentValue / health.effectiveMax) * 100
+                let health_color = (() => {
+                    if (health_percentage >= 100 || (health_percentage < 100 && health_percentage >= 75))
+                        return '\xa7a'
+                    else if (health_percentage < 75 && health_percentage >= 50)
+                        return '\xa7e'
+                    else if (health_percentage < 50 && health_percentage >= 25)
+                        return '\xa76'
+                    else if (health_percentage < 25 && health_percentage >= 0)
+                        return '\xa7c'
+                    else
+                        return '\xa7c'
+                })();
+                player.nameTag = hg.methods.get_rank_text(player) + player.name + `\n${player.getGameMode() === 'Creative' ? '\xa7i\xa7oIn creative mode' : `${health_color}${health_percentage.toFixed(2)}\xa7r%`}`
                 let kills  = player.getDynamicProperty('hgncb:pvp.kills') ?? 0
                 let deaths = player.getDynamicProperty('hgncb:pvp.deaths') ?? 0
-                let kdr_a = deaths === 0 ? 0 : (kills ?? 0) / (deaths ?? 0)
+                let kdr_a = deaths === 0 ? kills : (kills ?? 0) / (deaths ?? 0)
                 let kdr_b = isNaN(kdr_a) ? 0 : kdr_a
-                
+                let combat = Math.max(300 - (s.system.currentTick - (player.getDynamicProperty('hgncb:pvp.last_hit') ?? 0)), 0) / 20
                 player.onScreenDisplay.setActionBar([
                     `\xa7aKills\xa7f: ${kills}\n`,
                     `\xa7cDeaths\xa7f: ${deaths}\n`,
-                    `\xa7bKDR\xa7f: ${kdr_b.toFixed(3)}\n`
+                    `\xa7bKDR\xa7f: ${kdr_b.toFixed(3)}\n`,
+                    `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n`,
                 ])
 
                 if (player.getGameMode() !== 'Creative') {
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=iron_sword     }] run give @s[tag="hgncb:minigame.pvp"] iron_sword    1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=bow            }] run give @s[tag="hgncb:minigame.pvp"] bow           1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=cooked_beef    }] run give @s[tag="hgncb:minigame.pvp"] cooked_beef  64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=golden_apple   }] run give @s[tag="hgncb:minigame.pvp"] golden_apple 64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=iron_helmet    }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.head      0 iron_helmet     1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=iron_chestplate}] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.chest     0 iron_chestplate 1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=iron_leggings  }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.legs      0 iron_leggings   1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=iron_boots     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.feet      0 iron_boots      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a unless entity @s[hasitem={item=arrow          }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.inventory       0 arrow          64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_sword     }] run give @s[tag="hgncb:minigame.pvp"] iron_sword    1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=bow            }] run give @s[tag="hgncb:minigame.pvp"] bow           1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=cooked_beef    }] run give @s[tag="hgncb:minigame.pvp"] cooked_beef  64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=golden_apple   }] run give @s[tag="hgncb:minigame.pvp"] golden_apple 64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_helmet    }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.head      0 iron_helmet     1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_chestplate}] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.chest     0 iron_chestplate 1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_leggings  }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.legs      0 iron_leggings   1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_boots     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.feet      0 iron_boots      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=arrow          }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.inventory       0 arrow          64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                 }
             }
         }
@@ -261,6 +316,30 @@ let hg = {
                     }
 
                     s.world.sendMessage(`${hg.methods.get_rank_text(e.sender)}${e.sender.name} \xa7i»\xa7r ${e.message}`) // send the message globally
+                }
+            },
+            playerLeave: function(e) {
+                let target = e.player
+                for (let tag of target.getTags()) {
+                    if (tag.startsWith('hgncb:minigame.')) {
+                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                        if (game) {
+                            switch (game.id) {
+                                case 'pvp':
+                                    let in_combat = (s.system.currentTick - (target?.getDynamicProperty('hgncb:pvp.last_hit') ?? 0) < 300)
+                                    if (in_combat) {
+                                        let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
+
+                                        if (attacker && target && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player') {
+                                            hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target)
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
                 }
             },
             playerBreakBlock: function(e) {
@@ -320,37 +399,53 @@ let hg = {
                     hub.on_enter(player); // teleport the player to the hub
                 }
             },
+            projectileHitEntity: function(e) {
+                let attacker = e.source;
+                let target = e.getEntityHit().entity;
+
+                if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player') {
+                    attacker?.playSound('random.orb', {
+                        pitch: 0.5,
+                        volume: 1.0
+                    })
+                    attacker?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
+                    target?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
+
+                    attacker?.setDynamicProperty('hgncb:pvp.combat_id', target.id)
+                    target?.setDynamicProperty('hgncb:pvp.combat_id', attacker.id)
+                }
+            },
+            entityHitEntity: function(e) {
+                let attacker = e.damagingEntity;
+                let target = e.hitEntity;
+
+                if (attacker?.typeId === 'minecraft:player') {
+                    attacker?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
+                    target?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
+
+                    attacker?.setDynamicProperty('hgncb:pvp.combat_id', target.id)
+                    target?.setDynamicProperty('hgncb:pvp.combat_id', attacker.id)
+                }
+            },
             entityDie: function(e) {
                 let attacker = e.damageSource.damagingEntity;
                 let target = e.deadEntity;
 
-                for (let tag of attacker.getTags()) {
-                    if (tag.startsWith('hgncb:minigame.')) {
-                        let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
-                        if (game) {
-                            switch (game.id) {
-                                case 'pvp':
-                                    if (attacker?.id !== target?.id) {
-                                        let attacker_kills  = attacker.getDynamicProperty('hgncb:pvp.kills') ?? 0
-                                        let attacker_deaths = attacker.getDynamicProperty('hgncb:pvp.deaths') ?? 0
-                                        let target_kills    = attacker.getDynamicProperty('hgncb:pvp.kills') ?? 0
-                                        let target_deaths   = attacker.getDynamicProperty('hgncb:pvp.deaths') ?? 0
-                                        attacker?.setDynamicProperty('hgncb:pvp.kills', attacker_kills + 1)
-                                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
-                                        hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1')
-                                    } else {
-                                        let target_kills    = attacker.getDynamicProperty('hgncb:pvp.kills') ?? 0
-                                        let target_deaths   = attacker.getDynamicProperty('hgncb:pvp.deaths') ?? 0
-                                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
-                                        hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1')
-                                    }
-                                    break;
-                                default:
-                                    break;
+                if (attacker && target && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player')
+                    for (let tag of attacker.getTags()) {
+                        if (tag.startsWith('hgncb:minigame.')) {
+                            let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                            if (game) {
+                                switch (game.id) {
+                                    case 'pvp':
+                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target)
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                         }
                     }
-                }
             }
         }
     },
@@ -524,7 +619,10 @@ s.world.afterEvents.worldLoad.subscribe(() => {
                     b = a[0]?.trim()?.toLowerCase(),
                     c = a[1]?.trim()?.toLowerCase(),
                     input = a.slice(2).join(' ')
-                
+                if (!c || c === '') {
+                    player.sendMessage(`\xa7cPlease specify a debug command\xa7f!`);
+                    return;
+                }
                 switch (c) {
                     case 'eval':
                         // evaluate javascript code
@@ -558,7 +656,7 @@ s.world.afterEvents.worldLoad.subscribe(() => {
                         break;
                     default:
                         player.sendMessage(`\xa7cNo such debug command \xa7f\'!\xa7c${b.replace(hg.command_prefix, '')} ${c}\xa7f\'\xa7f!`);
-                        return;
+                        break;
                 }
             }
         }
