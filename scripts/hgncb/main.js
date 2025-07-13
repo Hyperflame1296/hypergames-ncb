@@ -192,11 +192,18 @@ let hg = {
                         target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
                         s.system.run(() => attacker_health.resetToMaxValue())
                         s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
+                        attacker?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
+                        target?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
+                        attacker?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
+                        target?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
                     } else {
                         let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills') ?? 0
                         let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
                         target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
                         s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
+
+                        target?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
+                        target?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
                     }
                 }
             },
@@ -260,7 +267,7 @@ let hg = {
                     `\xa7aKills\xa7f: ${kills}\n`,
                     `\xa7cDeaths\xa7f: ${deaths}\n`,
                     `\xa7bKDR\xa7f: ${kdr_b.toFixed(3)}\n`,
-                    `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n`,
+                    combat >= 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n` : `\xa7i\xa7oYou are not in combat.`,
                 ])
 
                 if (player.getGameMode() !== 'Creative') {
