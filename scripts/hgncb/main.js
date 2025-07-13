@@ -195,7 +195,9 @@ let hg = {
 
                 player.onScreenDisplay.setActionBar([
                     `\xa7bWelcome to HyperGames!\n`,
-                    ` \xa7bDiscord\xa7f: \xa7odiscord.gg/R5z3R3wd9h\xa7r`,
+                    `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
+                    `\xa7bYoutube\xa7f: \xa7ohttps://www.youtube.com/@Hyperflamee8\xa7r\n`,
+                    `\xa7bGithub\xa7f: \xa7ohttps://github.com/Hyperflame1296\xa7r\n`
                 ])
             }
         },
@@ -244,6 +246,9 @@ let hg = {
                                 case 'entityAttack':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by \xa7f${attacker.name}\xa7i.`)
                                     break;
+                                case 'maceSmash':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas obliterated by \xa7f${attacker.name}\xa7i.`)
+                                    break;
                                 case 'projectile':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by \xa7f${attacker.name} \xa7ivia projectile\xa7i.`)
                                     break;
@@ -254,7 +259,7 @@ let hg = {
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell to their death whilst fighting \xa7f${attacker.name}\xa7i.`)
                                     break;
                                 case 'fire':
-                                case 'fire_tick':
+                                case 'fireTick':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death whilst fighting \xa7f${attacker.name}\xa7i.`)
                                     break;
                                 case 'lava':
@@ -273,6 +278,9 @@ let hg = {
                                 case 'entityAttack':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by.`)
                                     break;
+                                case 'maceSmash':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas obliterated.`)
+                                    break;
                                 case 'projectile':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed via projectile.`)
                                     break;
@@ -283,7 +291,7 @@ let hg = {
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell to their death.`)
                                     break;
                                 case 'fire':
-                                case 'fire_tick':
+                                case 'fireTick':
                                     player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death.`)
                                     break;
                                 case 'lava':
@@ -377,11 +385,11 @@ let hg = {
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=cooked_beef    }] run give @s[tag="hgncb:minigame.pvp"] cooked_beef  64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=golden_apple   }] run give @s[tag="hgncb:minigame.pvp"] golden_apple 64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=gold_ingot     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.hotbar          8 gold_ingot      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_helmet    }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.head      0 iron_helmet     1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_chestplate}] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.chest     0 iron_chestplate 1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_leggings  }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.legs      0 iron_leggings   1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_boots     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.feet      0 iron_boots      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
-                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=shield         }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.weapon.offhand  0 shield          1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_helmet    }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.head      0 iron_helmet     1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_chestplate}] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.chest     0 iron_chestplate 1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_leggings  }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.legs      0 iron_leggings   1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_boots     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.feet      0 iron_boots      1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=shield         }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.weapon.offhand  0 shield          1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=arrow          }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.inventory       0 arrow          64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                 }
             }
@@ -761,7 +769,25 @@ s.world.afterEvents.worldLoad.subscribe(() => {
                             })(out)
                             player.sendMessage('» ' + res)
                         } catch (e) {
-                            player.sendMessage(`\xa7cerror\xa7f: \xa7f${e}`);
+                            player.sendMessage(`\xa7cERROR \xa7f- \xa7f${e}`);
+                        }
+                        break;
+                    case 'prop_set':
+                        // set a dynamic property
+                        try {
+                            let args = input.split(' ')
+                            let prop = args[0]
+                            let name = args[1]
+                            let value = isNaN(parseFloat(args[2])) ? args[2] : parseFloat(args[2])
+
+                            let player = hg.dimensions.overworld.getPlayers({ name })[0]
+                            if (player) {
+                                player.setDynamicProperty(prop, value)
+                            } else {
+                                player.sendMessage(`\xa7cThere is no player named \xa7f\'\xa7c${name}\xa7f\'.`);
+                            }
+                        } catch (e) {
+                            player.sendMessage(`\xa7cERROR \xa7f- \xa7f${e}`);
                         }
                         break;
                     default:
