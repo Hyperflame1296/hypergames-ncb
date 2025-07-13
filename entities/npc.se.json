@@ -249,7 +249,7 @@
                 }
             },
             "minecraft:nameable": {
-                "always_show": false,
+                "always_show": true,
                 "allow_name_tag_renaming": false
             },
             "minecraft:physics": {}

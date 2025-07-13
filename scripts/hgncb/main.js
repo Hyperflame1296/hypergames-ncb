@@ -43,6 +43,7 @@ let hg = {
         Flash86555:  {
             level: 2,
             text: [
+                '\xa7i[\xa7bMain Builder\xa7i]',
                 '\xa7i[\xa7aAdmin\xa7i]'
             ]
         },
@@ -213,6 +214,12 @@ let hg = {
                     duration: 220,
                     amplifier: 255,
                     particles: false
+                },
+                {
+                    id: 'saturation',
+                    duration: 220,
+                    amplifier: 255,
+                    particles: false
                 }
             ],
             location: {
@@ -262,12 +269,12 @@ let hg = {
                 let deaths = player.getDynamicProperty('hgncb:pvp.deaths') ?? 0
                 let kdr_a = deaths === 0 ? kills : (kills ?? 0) / (deaths ?? 0)
                 let kdr_b = isNaN(kdr_a) ? 0 : kdr_a
-                let combat = Math.max(300 - (s.system.currentTick - (player.getDynamicProperty('hgncb:pvp.last_hit') ?? 0)), 0) / 20
+                let combat = Math.max((300 - (s.system.currentTick - (player.getDynamicProperty('hgncb:pvp.last_hit') ?? 0))) / 20, 0)
                 player.onScreenDisplay.setActionBar([
                     `\xa7aKills\xa7f: ${kills}\n`,
                     `\xa7cDeaths\xa7f: ${deaths}\n`,
                     `\xa7bKDR\xa7f: ${kdr_b.toFixed(3)}\n`,
-                    combat >= 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n` : `\xa7i\xa7oYou are not in combat.`,
+                    combat > 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n` : `\xa7i\xa7oYou are not in combat.`,
                 ])
 
                 if (player.getGameMode() !== 'Creative') {
