@@ -20,7 +20,7 @@ let hg = {
         get_rank_level: function(player) {
             return (hg.ranks[player.name] ?? hg.ranks.default).level
         },
-        clog_prevent: function(target) {
+        clog_prevent: function(target, method) {
             for (let tag of target.getTags()) {
                 if (tag.startsWith('hgncb:minigame.')) {
                     let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
@@ -32,7 +32,30 @@ let hg = {
                                     let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
 
                                     if (attacker && target && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player') {
-                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target)
+                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, method ?? 'clog_prevent')
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        },
+        diff_death: function(target, method='contact') {
+            for (let tag of target.getTags()) {
+                if (tag.startsWith('hgncb:minigame.')) {
+                    let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                    if (game) {
+                        switch (game.id) {
+                            case 'pvp':
+                                let in_combat = (s.system.currentTick - (target?.getDynamicProperty('hgncb:pvp.last_hit') ?? 0) < 300)
+                                if (in_combat) {
+                                    let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
+
+                                    if (attacker && target && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player') {
+                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, method)
                                     }
                                 }
                                 break;
@@ -117,7 +140,7 @@ let hg = {
                 {
                     text: 'PVP',
                     id: 'npc_pvp',
-                    skin: 1,
+                    skin: 0,
                     location: {
                         x: 0.5,
                         y: 2.5,
@@ -139,7 +162,7 @@ let hg = {
             ],
             location: {
                 x: 0.5,
-                y: 1,
+                y: 3,
                 z: 0.5
             },
             on_enter: function(player) {
@@ -169,6 +192,11 @@ let hg = {
 
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
+
+                player.onScreenDisplay.setActionBar([
+                    `\xa7bWelcome to HyperGames!\n`,
+                    ` \xa7bDiscord\xa7f: \xa7odiscord.gg/R5z3R3wd9h\xa7r`,
+                ])
             }
         },
         {
@@ -184,7 +212,7 @@ let hg = {
                 
             ],
             methods: {
-                kill_trade: function(attacker, target) {
+                kill_trade: function(attacker, target, method='contact') {
                     if (attacker?.id !== target?.id && attacker?.getGameMode() !== 'Creative' && target?.getGameMode() !== 'Creative') {
                         let attacker_kills  = attacker?.getDynamicProperty('hgncb:pvp.kills') ?? 0
                         let attacker_deaths = attacker?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
@@ -194,20 +222,82 @@ let hg = {
                         let target_health = target?.getComponent('minecraft:health')
                         attacker?.setDynamicProperty('hgncb:pvp.kills', attacker_kills + 1)
                         target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
-                        s.system.run(() => attacker_health.resetToMaxValue())
+                        s.system.run(() => attacker_health?.resetToMaxValue())
                         s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
                         attacker?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
                         target?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
                         attacker?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
                         target?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
                     } else {
-                        let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills') ?? 0
-                        let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
-                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
+                        let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills')  ?? 0;
+                        let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0;
+                        target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths ?? + 1)
                         s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.pvp"] 1000 108 0 1 1 1'))
 
                         target?.setDynamicProperty('hgncb:pvp.last_hit', undefined)
                         target?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
+                    }
+                    for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.pvp'] })) {
+                        if (attacker) {
+                            switch (method) {
+                                case 'contact':
+                                case 'entityAttack':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                                case 'projectile':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by \xa7f${attacker.name} \xa7ivia projectile\xa7i.`)
+                                    break;
+                                case 'clog_prevent':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged, and \xa7f${attacker.name} \xa7igot the kill\xa7i.`)
+                                    break;
+                                case 'fall':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell to their death whilst fighting \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                                case 'fire':
+                                case 'fire_tick':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death whilst fighting \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                                case 'lava':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7imistook lava for a hottub whilst fighting \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                                case 'fireworks':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas blown up by fireworks whilst fighting \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                                default:
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied by \xa7f${attacker.name}\xa7i.`)
+                                    break;
+                            }
+                        } else {
+                            switch (method) {
+                                case 'contact':
+                                case 'entityAttack':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed by.`)
+                                    break;
+                                case 'projectile':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed via projectile.`)
+                                    break;
+                                case 'clog_prevent':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged.`)
+                                    break;
+                                case 'fall':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell to their death.`)
+                                    break;
+                                case 'fire':
+                                case 'fire_tick':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death.`)
+                                    break;
+                                case 'lava':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7imistook lava for a hottub.`)
+                                    break;
+                                case 'fireworks':
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas blown up by fireworks.`)
+                                    break;
+                                default:
+                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied.`)
+                                    break;
+                            }
+                        }
+                        
                     }
                 }
             },
@@ -277,7 +367,7 @@ let hg = {
                     `\xa7aKills\xa7f: ${kills}\n`,
                     `\xa7cDeaths\xa7f: ${deaths}\n`,
                     `\xa7bKDR\xa7f: ${kdr_b.toFixed(3)}\n`,
-                    combat > 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}\n` : `\xa7i\xa7oYou are not in combat.`,
+                    combat > 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}s\n` : `\xa7i\xa7oYou are not in combat.`,
                 ])
 
                 if (player.getGameMode() !== 'Creative') {
@@ -286,6 +376,7 @@ let hg = {
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=bow            }] run give @s[tag="hgncb:minigame.pvp"] bow           1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=cooked_beef    }] run give @s[tag="hgncb:minigame.pvp"] cooked_beef  64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=golden_apple   }] run give @s[tag="hgncb:minigame.pvp"] golden_apple 64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                    player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=gold_ingot     }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.hotbar          8 gold_ingot      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_helmet    }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.head      0 iron_helmet     1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_chestplate}] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.chest     0 iron_chestplate 1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
                     player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_leggings  }] run replaceitem entity @s[tag="hgncb:minigame.pvp"] slot.armor.legs      0 iron_leggings   1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
@@ -402,7 +493,7 @@ let hg = {
                 let attacker = e.source;
                 let target = e.getEntityHit().entity;
 
-                if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player') {
+                if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player' && target?.typeId === 'minecraft:player' && attacker.getGameMode() !== 'Creative' && target.getGameMode() !== 'Creative') {
                     attacker?.playSound('random.orb', {
                         pitch: 0.5,
                         volume: 1.0
@@ -418,7 +509,7 @@ let hg = {
                 let attacker = e.damagingEntity;
                 let target = e.hitEntity;
 
-                if (attacker?.typeId === 'minecraft:player' && target?.typeId === 'minecraft:player') {
+                if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player' && target?.typeId === 'minecraft:player' && attacker.getGameMode() !== 'Creative' && target.getGameMode() !== 'Creative') {
                     attacker?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
                     target?.setDynamicProperty('hgncb:pvp.last_hit', s.system.currentTick)
 
@@ -431,7 +522,7 @@ let hg = {
                 let target = e.deadEntity;
 
                 if (!attacker && target && target.typeId === 'minecraft:player')
-                    hg.methods.clog_prevent(target)
+                    hg.methods.diff_death(target, e.damageSource.cause)
                 if (attacker && target && attacker.typeId === 'minecraft:player' && target.typeId === 'minecraft:player')
                     for (let tag of attacker.getTags()) {
                         if (tag.startsWith('hgncb:minigame.')) {
@@ -439,7 +530,7 @@ let hg = {
                             if (game) {
                                 switch (game.id) {
                                     case 'pvp':
-                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target)
+                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, e.damageSource.cause)
                                         break;
                                     default:
                                         break;
@@ -526,10 +617,21 @@ let hg = {
                             tags: [`hgncb:minigame.${npc.link}`]
                         }).length
                         npc_comp.name = `\xa7b${npc_data.text}\xa7r\n\xa7i\xa7o${player_count} players`
-                        npc_comp.skinIndex = npc_data.skin
+                        npc_comp.skinIndex !== npc_data.skin ? npc_comp.skinIndex = npc_data.skin : void 0;
                         npc.addTag(`hgncb:npc.${game.id}`)
                         npc.teleport(npc_data.location, {
-                            facingLocation: { x: 0, y: 2, z: 0 }
+                            facingLocation: { x: 0, y: 4, z: 0 }
+                        })
+                    } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${game.id}`] }).length > 0) {
+                        let npc = hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${game.id}`] })[0]
+                        let npc_comp = npc.getComponent('minecraft:npc')
+                        let player_count = hg.dimensions.overworld.getPlayers({
+                            tags: [`hgncb:minigame.${npc.link}`]
+                        }).length
+                        npc_comp.name = `\xa7b${npc_data.text}\xa7r\n\xa7i\xa7o${player_count} players`
+                        npc_comp.skinIndex !== npc_data.skin ? npc_comp.skinIndex = npc_data.skin : void 0;
+                        npc.teleport(npc_data.location, {
+                            facingLocation: { x: 0, y: 4, z: 0 }
                         })
                     }
                 }
