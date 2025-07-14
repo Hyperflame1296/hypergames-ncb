@@ -51,9 +51,10 @@ let hg = {
                     if (game) {
                         switch (game.id) {
                             case 'pvp':
+                                let in_combat = (s.system.currentTick - (target?.getDynamicProperty('hgncb:pvp.last_hit') ?? 0) < 300)
                                 let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
                                 if (target && target.typeId === 'minecraft:player') {
-                                    hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, method)
+                                    hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(in_combat ? attacker : undefined, target, method)
                                 }
                                 break;
                             default:
