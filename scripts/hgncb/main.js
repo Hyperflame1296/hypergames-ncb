@@ -18,6 +18,7 @@ let hg = {
         '#\xa7b5 \xa7f- \xa7bNo brainrot or inappropriate stuff\xa7f.',
         '#\xa7b6 \xa7f- \xa7bDo not abuse glitches\xa7f.',
         '#\xa7b7 \xa7f- \xa7bDo not ask for op\xa7f. \xa7i\xa7oI\'m honestly so sick of it...',
+        '#\xa7b7 \xa7f- \xa7bDo not roleplay\xa7f. \xa7i\xa7oNo, seriously. This is not a joke.',
         '\xa7f---\xa7bADMIN RULES\xa7f---',
         '#\xa7b8 \xa7f- \xa7bNo admin abuse\xa7f.',
         '#\xa7b9 \xa7f- \xa7bDo not interfere with games unless given permission by the owner\xa7f.'
@@ -385,7 +386,6 @@ let hg = {
                 if (!hg.methods.check_op(player)) {
                     player.setGameMode('Survival')
                 }
-                player.removeTag('njmp:player.disable_1.9_pvp')
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
 
@@ -419,6 +419,7 @@ let hg = {
                                 id: 'revoke_10_deaths',
                                 text: 'Revoke 10 Deaths',
                                 cost: 1500,
+                                condition: player => true,
                                 on_buy: player => {
                                     let deaths = player?.getDynamicProperty('hgncb:pvp.revoked_deaths') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.revoked_deaths', deaths + 10)
@@ -430,7 +431,72 @@ let hg = {
                         section_id: 'upgrades',
                         section_name: 'Upgrades',
                         items: [
-                            
+                            {
+                                id: 'upgrade_sword',
+                                text: 'Upgrade Sword',
+                                cost: 750,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0) <= 5,
+                                on_buy: player => {
+                                    let sword_level = player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.sword_level', sword_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            },
+                            {
+                                id: 'upgrade_axe',
+                                text: 'Upgrade Axe',
+                                cost: 750,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0) <= 5,
+                                on_buy: player => {
+                                    let axe_level = player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.axe_level', axe_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            },
+                            {
+                                id: 'upgrade_helmet',
+                                text: 'Upgrade Helmet',
+                                cost: 850,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0) <= 4,
+                                on_buy: player => {
+                                    let helmet_level = player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.helmet_level', helmet_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            },
+                            {
+                                id: 'upgrade_chestplate',
+                                text: 'Upgrade Chestplate',
+                                cost: 850,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0) <= 4,
+                                on_buy: player => {
+                                    let chestplate_level = player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.chestplate_level', chestplate_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            },
+                            {
+                                id: 'upgrade_leggings',
+                                text: 'Upgrade Leggings',
+                                cost: 850,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0) <= 4,
+                                on_buy: player => {
+                                    let leggings_level = player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.leggings_level', leggings_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            },
+                            {
+                                id: 'upgrade_boots',
+                                text: 'Upgrade Boots',
+                                cost: 850,
+                                condition: player => (player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0) <= 4,
+                                on_buy: player => {
+                                    let boots_level = player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0
+                                    player?.setDynamicProperty('hgncb:pvp.boots_level', boots_level + 1)
+                                    player?.runCommand('clear')
+                                }
+                            }
                         ]
                     }
                 ]
@@ -512,7 +578,7 @@ let hg = {
                             if (items) {
                                 shop_form.label(`\xa7fYou currently have \xa7b${coins}\xa7f gold\xa7f.`)
                                 for (let item of items) {
-                                    shop_form.button(`${item.text}\n$\xa7q${item.cost}`)
+                                    item.condition(player) ? shop_form.button(`${item.text}\n$\xa7q${item.cost}`) : void 0;
                                 }
                                 shop_form.show(player).then(res_nosel => {
                                     if (res_nosel.canceled) {
@@ -520,7 +586,7 @@ let hg = {
                                         return -1;
                                     } else {
                                         player.setDynamicProperty('hgncb:pvp.is_shopping', false)
-                                        let item = pvp.properties.shop[0].items[res_nosel.selection];
+                                        let item = items[res_nosel.selection];
                                         if (item && coins >= item.cost) {
                                             item.on_buy(player)
                                             player.setDynamicProperty('hgncb:pvp.coins', coins - item.cost)
@@ -555,7 +621,7 @@ let hg = {
                         let kdr_b_2 = isNaN(kdr_b_1) ? 0 : kdr_b_1
                         return kdr_b_2 - kdr_a_2
                     })
-                    player.setDynamicProperty('hgncb:pvp.is_shopping', true)
+                    player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', true)
                     let str = ''
                     for (let i = 0; i < players.length; i++) {
                         let playersort = players[i]
@@ -572,9 +638,9 @@ let hg = {
                     lb_form.label(str)
                     lb_form.show(player).then(res => {
                         if (res.canceled) {
-                            player.setDynamicProperty('hgncb:pvp.is_shopping', false)
+                            player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
                             return -1;
-                        } else player.setDynamicProperty('hgncb:pvp.is_shopping', false)
+                        } else player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
                     });
                 }
             },
@@ -621,7 +687,6 @@ let hg = {
                 if (!hg.methods.check_op(player)) {
                     player.setGameMode('Survival')
                 }
-                player.addTag('njmp:player.disable_1.9_pvp')
                 let health = player.getComponent('minecraft:health')
                 let health_percentage = (health.currentValue / health.effectiveMax) * 100
                 let health_color = (() => {
@@ -641,6 +706,8 @@ let hg = {
                         return '\xa7i\xa7oIn creative mode...'
                     else if (player.getDynamicProperty('hgncb:pvp.is_shopping')) 
                         return '\xa7e\xa7oShopping...'
+                    else if (player.getDynamicProperty('hgncb:pvp.is_viewing_leaderboard')) 
+                        return '\xa7a\xa7oViewing leaderboard...'
                     else return `${health_color}${health_percentage.toFixed(2)}\xa7r%`
                 })
                 player.nameTag = hg.methods.get_rank_text(player) + player.name + `\n${nametag_func()}`
@@ -658,7 +725,7 @@ let hg = {
                     combat > 0 ? `\xa7iCombat\xa7f: ${combat.toFixed(2)}s\n` : `\xa7i\xa7oYou are not in combat.`,
                 ])
 
-                if (player.getDynamicProperty('hgncb:pvp.is_shopping')) {
+                if (player.getDynamicProperty('hgncb:pvp.is_shopping') || player.getDynamicProperty('hgncb:pvp.is_viewing_leaderboard')) {
                     player.addEffect('resistance', 2, {
                         amplifier: 255,
                         particles: true
@@ -691,32 +758,60 @@ let hg = {
                     let bow_enchantable        = bow       .getComponent('minecraft:enchantable');
                     let shield_enchantable     = shield    .getComponent('minecraft:enchantable');
 
-                    helmet     .nameTag = '\xa7r\xa7eDefault Helmet'
-                    chestplate .nameTag = '\xa7r\xa7eDefault Chestplate'
-                    leggings   .nameTag = '\xa7r\xa7eDefault Leggings'
-                    boots      .nameTag = '\xa7r\xa7eDefault Boots'
-                    sword      .nameTag = '\xa7r\xa7eDefault Sword'
-                    axe        .nameTag = '\xa7r\xa7eDefault Axe'
-                    bow        .nameTag = '\xa7r\xa7eDefault Bow'
-                    shop       .nameTag = '\xa7r\xa7bShop'
-                    leaderboard.nameTag = '\xa7r\xa7aLeaderboard'
+                    let sword_level      = player.getDynamicProperty('hgncb:pvp.sword_level'     ) ?? 0
+                    let axe_level        = player.getDynamicProperty('hgncb:pvp.axe_level'       ) ?? 0
+                    let helmet_level     = player.getDynamicProperty('hgncb:pvp.helmet_level'    ) ?? 0
+                    let chestplate_level = player.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0
+                    let leggings_level   = player.getDynamicProperty('hgncb:pvp.leggings_level'  ) ?? 0
+                    let boots_level      = player.getDynamicProperty('hgncb:pvp.boots_level'     ) ?? 0
 
-                    helmet     .lockMode = 'inventory'
-                    chestplate .lockMode = 'inventory'
-                    leggings   .lockMode = 'inventory'
-                    boots      .lockMode = 'inventory'
-                    sword      .lockMode = 'inventory'
-                    axe        .lockMode = 'inventory'
-                    bow        .lockMode = 'inventory'
-                    gapple     .lockMode = 'inventory'
+                    helmet     .nameTag = `\xa7r\xa7eIron Helmet${helmet_level > 0 ? ` \xa7i[\xa7elvl. ${helmet_level}\xa7i]` : ''}t`
+                    chestplate .nameTag = `\xa7r\xa7eIron Chestplate${chestplate_level > 0 ? ` \xa7i[\xa7elvl. ${chestplate_level}\xa7i]` : ''}`
+                    leggings   .nameTag = `\xa7r\xa7eIron Leggings${leggings_level > 0 ? ` \xa7i[\xa7elvl. ${leggings_level}\xa7i]` : ''}`
+                    boots      .nameTag = `\xa7r\xa7eIron Boots${boots_level > 0 ? ` \xa7i[\xa7elvl. ${boots_level}\xa7i]` : ''}`
+                    sword      .nameTag = `\xa7r\xa7eIron Sword${sword_level > 0 ? ` \xa7i[\xa7elvl. ${sword_level}\xa7i]` : ''}`
+                    axe        .nameTag = `\xa7r\xa7eIron Axe${axe_level > 0 ? ` \xa7i[\xa7elvl. ${axe_level}\xa7i]` : ''}`
+                    bow        .nameTag = `\xa7r\xa7eBow`
+                    shop       .nameTag = `\xa7r\xa7bShop`
+                    leaderboard.nameTag = `\xa7r\xa7aLeaderboard`
+
+                    helmet     .lockMode = 'slot'
+                    chestplate .lockMode = 'slot'
+                    leggings   .lockMode = 'slot'
+                    boots      .lockMode = 'slot'
+                    sword      .lockMode = 'slot'
+                    axe        .lockMode = 'slot'
+                    bow        .lockMode = 'slot'
+                    gapple     .lockMode = 'slot'
                     shop       .lockMode = 'slot'
                     arrow      .lockMode = 'slot'
-                    shield     .lockMode = 'inventory'
+                    shield     .lockMode = 'slot'
+                    
+                    sword_level > 0 ? sword_enchantable.addEnchantment({
+                        level: sword_level,
+                        type: new s.EnchantmentType('sharpness')
+                    }) : void 0;
+                    axe_level   > 0 ? axe_enchantable.addEnchantment({
+                        level: axe_level,
+                        type: new s.EnchantmentType('sharpness')
+                    }) : void 0;
 
-                    bow_enchantable.addEnchantment({
-                        level: 1,
-                        type: new s.EnchantmentType('punch')
-                    })
+                    helmet_level > 0 ? helmet_enchantable.addEnchantment({
+                        level: helmet_level,
+                        type: new s.EnchantmentType('protection')
+                    }) : void 0;
+                    chestplate_level   > 0 ? chestplate_enchantable.addEnchantment({
+                        level: chestplate_level,
+                        type: new s.EnchantmentType('protection')
+                    }) : void 0;
+                    leggings_level > 0 ? leggings_enchantable.addEnchantment({
+                        level: leggings_level,
+                        type: new s.EnchantmentType('protection')
+                    }) : void 0;
+                    boots_level   > 0 ? boots_enchantable.addEnchantment({
+                        level: boots_level,
+                        type: new s.EnchantmentType('protection')
+                    }) : void 0;
 
                     container.getItem(0)?.typeId !== sword      .typeId ? container.setItem(0, sword      ) : void 0;
                     container.getItem(1)?.typeId !== axe        .typeId ? container.setItem(1, axe        ) : void 0;
@@ -751,7 +846,29 @@ let hg = {
             },
             methods: {
                 reset: function() {
+                    let game = hg.minigames.find(m => m.id === 'random_events')
+                    let players_creative = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'] })
+                    let players          = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'], excludeGameModes: ['Creative'] })
                     hg.dimensions.overworld.runCommand('structure load hgncb:random_events.str.map -1025 250 -25')
+
+                    for (let i = 0; i < players.length; i++) {
+                        let player = players[i];
+
+                        if (player) {
+                            let pos = {
+                                x: Math.cos((i / players.length) * (2 * Math.PI)) * 22.5 + game.location.x,
+                                y: game.location.y,
+                                z: Math.sin((i / players.length) * (2 * Math.PI)) * 22.5 + game.location.z
+                            }
+                            player.teleport(pos, {
+                                facingLocation: {
+                                    x: game.location.x,
+                                    y: game.location.y + 1,
+                                    z: game.location.z
+                                }
+                            })
+                        }
+                    }
                 }
             },
             effects: [
@@ -797,16 +914,32 @@ let hg = {
                 if (!hg.methods.check_op(player)) {
                     player.setGameMode('Survival')
                 }
-                player.removeTag('njmp:player.disable_1.9_pvp')
-                player.nameTag = hg.methods.get_rank_text(player) + player.name
-                player.runCommand('clear @s[m=!c]')
+                let wins  = player.getDynamicProperty('hgncb:random_events.wins') ?? 0
+                let losses = player.getDynamicProperty('hgncb:random_events.losses') ?? 0
 
+                let wlr_a = (losses) <= 0 ? wins : (wins) / (losses)
+                let wlr_b = isNaN(wlr_a) ? 0 : (isFinite(wlr_a) ? wlr_a : wins)
+                let nametag_func = (() => {
+                    if (player.getGameMode() === 'Creative') 
+                        return '\xa7i\xa7oIn creative mode...'
+                    else if (player.getDynamicProperty('hgncb:random_events.is_viewing_leaderboard')) 
+                        return '\xa7a\xa7oViewing leaderboard...'
+                    else return `\xa7aWins\xa7f: \xa7a${wins}\xa7r | \xa7cLosses\xa7f: \xa7c${losses}\xa7r`
+                })
+                player.nameTag = hg.methods.get_rank_text(player) + player.name + `\n${nametag_func()}`
                 player.onScreenDisplay.setActionBar([
-                    `\xa7bWelcome to HyperGames!\n`,
-                    `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
-                    `\xa7bYoutube\xa7f: \xa7ohttps://www.youtube.com/@Hyperflamee8\xa7r\n`,
-                    `\xa7bGithub\xa7f: \xa7ohttps://github.com/Hyperflame1296\xa7r\n`
+                    `\xa7aWins\xa7f: ${wins}\n`,
+                    `\xa7cLosses\xa7f: ${losses}\n`,
+                    `\xa7bWLR\xa7f: ${wlr_b.toFixed(3)}\n`,
+                    `nothing in this part of the actionbar yet :)`,
                 ])
+
+                if (player.getDynamicProperty('hgncb:random_events.is_viewing_leaderboard')) {
+                    player.addEffect('resistance', 2, {
+                        amplifier: 255,
+                        particles: true
+                    })
+                }
             }
         },
         {
@@ -870,7 +1003,6 @@ let hg = {
                 if (!hg.methods.check_op(player)) {
                     player.setGameMode('Survival')
                 }
-                player.removeTag('njmp:player.disable_1.9_pvp')
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
 
@@ -1095,7 +1227,12 @@ let hg = {
     on_tick: function() {
         s.system.runInterval(() => {
             // runs every game tick
+            let w_props = s.world.getDynamicPropertyIds()
 
+            for (let prop of w_props)
+                if (prop.startsWith('hgncb:timer.'))
+                    s.world.getDynamicProperty(prop) > 0 ? s.world.setDynamicProperty(prop, s.world.getDynamicProperty(prop) - 1) : void 0;
+            
             for (let player of s.world.getPlayers()) {
                 if (typeof player !== 'undefined') {
                     let props = player.getDynamicPropertyIds()
