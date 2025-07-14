@@ -1,0 +1,1 @@
+npm i "@minecraft/server@2.1.0-beta.1.21.93-stable" "@minecraft/server-ui@2.1.0-beta.1.21.93-stable" "@minecraft/server-gametest@1.0.0-beta.1.21.93-stable" "@minecraft/common@1.2.0" "@minecraft/debug-utilities@1.0.0-beta.1.21.93-stable"

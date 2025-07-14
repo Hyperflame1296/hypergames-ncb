@@ -105,7 +105,7 @@
                 ]
             },
             "minecraft:experience_reward": {
-                "on_death": "Math.Min(query.player_level * 7, 100)"
+                "on_death": "math.min(q.player_level * 7, 100)"
             },
             "minecraft:type_family": {
                 "family": [
@@ -179,7 +179,7 @@
                 "allow_name_tag_renaming": false
             },
             "minecraft:physics": {
-                "push_towards_closest_space": true
+                "push_towards_closest_space": false
             },
             "minecraft:pushable": {
                 "is_pushable": false,
