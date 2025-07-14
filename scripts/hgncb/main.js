@@ -34,6 +34,11 @@ let hg = {
         get_rank_level: function(player) {
             return (hg.ranks[player.name] ?? hg.ranks.default).level
         },
+        parse_bool: function(x) {
+            if (x.startsWith('true' )) return true;
+            if (x.startsWith('false')) return false;
+            return;
+        },
         clog_prevent: function(target, method) {
             for (let tag of target.getTags()) {
                 if (tag.startsWith('hgncb:minigame.')) {
@@ -306,6 +311,12 @@ let hg = {
                 '\xa7i[\xa7sOG\xa7i]'
             ]
         },
+        ryanrocks1111:  {
+            level: 0,
+            text: [
+                '\xa7i[\xa7sOG\xa7i]'
+            ]
+        },
     },
     minigames: [
         {
@@ -434,67 +445,75 @@ let hg = {
                             {
                                 id: 'upgrade_sword',
                                 text: 'Upgrade Sword',
-                                cost: 750,
+                                xp: true,
+                                cost: 500,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0) <= 5,
                                 on_buy: player => {
                                     let sword_level = player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.sword_level', sword_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7f${(player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0) <= 0 ? 'No Enchantment' : `Sharpness ${(player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0)}`} \xa7i-> \xa7fSharpness ${(player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0)}`)
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.sowrd_level') ?? 0) <= 0 ? 'No Enchantment' : `Sharpness ${(player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0)}`} \xa7i-> \xa7fSharpness ${(player?.getDynamicProperty('hgncb:pvp.sword_level') ?? 0)})`)
                                 }
                             },
                             {
                                 id: 'upgrade_axe',
                                 text: 'Upgrade Axe',
-                                cost: 750,
+                                cost: 500,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0) <= 5,
                                 on_buy: player => {
                                     let axe_level = player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.axe_level', axe_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0) <= 0 ? 'No Enchantment' : `Sharpness ${(player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0)}`} \xa7i-> \xa7fSharpness ${(player?.getDynamicProperty('hgncb:pvp.axe_level') ?? 0)})`)
                                 }
                             },
                             {
                                 id: 'upgrade_helmet',
                                 text: 'Upgrade Helmet',
-                                cost: 850,
+                                cost: 600,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0) <= 4,
                                 on_buy: player => {
                                     let helmet_level = player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.helmet_level', helmet_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0) <= 0 ? 'No Enchantment' : `Protection ${(player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0)}`} \xa7i-> \xa7fProtection ${(player?.getDynamicProperty('hgncb:pvp.helmet_level') ?? 0)})`)
                                 }
                             },
                             {
                                 id: 'upgrade_chestplate',
                                 text: 'Upgrade Chestplate',
-                                cost: 850,
+                                cost: 600,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0) <= 4,
                                 on_buy: player => {
                                     let chestplate_level = player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.chestplate_level', chestplate_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0) <= 0 ? 'No Enchantment' : `Protection ${(player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0)}`} \xa7i-> \xa7fProtection ${(player?.getDynamicProperty('hgncb:pvp.chestplate_level') ?? 0)})`)
                                 }
                             },
                             {
                                 id: 'upgrade_leggings',
                                 text: 'Upgrade Leggings',
-                                cost: 850,
+                                cost: 600,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0) <= 4,
                                 on_buy: player => {
                                     let leggings_level = player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.leggings_level', leggings_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0) <= 0 ? 'No Enchantment' : `Protection ${(player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0)}`} \xa7i-> \xa7fProtection ${(player?.getDynamicProperty('hgncb:pvp.leggings_level') ?? 0)})`)
                                 }
                             },
                             {
                                 id: 'upgrade_boots',
                                 text: 'Upgrade Boots',
-                                cost: 850,
+                                cost: 600,
                                 condition: player => (player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0) <= 4,
                                 on_buy: player => {
                                     let boots_level = player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0
                                     player?.setDynamicProperty('hgncb:pvp.boots_level', boots_level + 1)
                                     player?.runCommand('clear')
+                                    player?.sendMessage(`\xa7eShop \xa7i» \xa7eUpgrade successful! \xa7f(${(player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0) <= 0 ? 'No Enchantment' : `Protection ${(player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0)}`} \xa7i-> \xa7fProtection ${(player?.getDynamicProperty('hgncb:pvp.boots_level') ?? 0)})`)
                                 }
                             }
                         ]
@@ -509,6 +528,7 @@ let hg = {
                         let attacker_xp  = attacker?.getDynamicProperty('hgncb:pvp.xp') ?? 0
                         let attacker_deaths = attacker?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
                         let target_kills    = target?.getDynamicProperty('hgncb:pvp.kills') ?? 0
+                        let target_coins    = target?.getDynamicProperty('hgncb:pvp.coins') ?? 0
                         let target_deaths   = target?.getDynamicProperty('hgncb:pvp.deaths') ?? 0
                         let attacker_health = attacker?.getComponent('minecraft:health')
                         let target_health = target?.getComponent('minecraft:health')
@@ -522,10 +542,24 @@ let hg = {
                                 particles: true
                             })
                         }
+                        let ms = false
+                        if ((attacker_kills + 1) !== 0 && (attacker_kills + 1) % 50 === 0) {
+                            attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou win \xa7b400\xa7i coins!`)
+                            ms = true
+                            for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.pvp'] })) {
+                                player.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7f${attacker.name} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
+                                player.playSound('random.levelup', {
+                                    pitch: 2.0,
+                                    volume: 1.0
+                                })
+                            }
+                        }
                         attacker?.setDynamicProperty('hgncb:pvp.kills', attacker_kills + 1)
-                        attacker?.setDynamicProperty('hgncb:pvp.coins', attacker_coins + coins_earned)
+                        attacker?.setDynamicProperty('hgncb:pvp.coins', attacker_coins + coins_earned + (ms ? 400 : 0))
+                        target?.setDynamicProperty('hgncb:pvp.coins', target_coins + 2)
                         attacker?.setDynamicProperty('hgncb:pvp.xp', attacker_xp + xp_earned)
                         attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou have won \xa7b${coins_earned}\xa7i gold and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target?.name}\xa7i!`)
+                        target?.sendMessage(`\xa7i[\xa7eX_X\xa7i] \xa7iYou have been slain by \xa7f${attacker?.name}\xa7i. You get \xa7b${2}\xa7i gold.`)
                         target?.setDynamicProperty('hgncb:pvp.deaths', target_deaths + 1)
                         s.system.run(() => attacker_health?.resetToMaxValue())
                         s.system.run(() => {
@@ -572,20 +606,18 @@ let hg = {
                             player.setDynamicProperty('hgncb:pvp.is_shopping', false)
                             return -1;
                         } else {
-                            player.setDynamicProperty('hgncb:pvp.is_shopping', false)
                             let shop_form = new ui.ActionFormData();
-                            let items = pvp.properties.shop[res.selection].items
+                            let items = pvp.properties.shop[res.selection].items.filter(i => i.condition(player))
                             if (items) {
                                 shop_form.label(`\xa7fYou currently have \xa7b${coins}\xa7f gold\xa7f.`)
                                 for (let item of items) {
-                                    item.condition(player) ? shop_form.button(`${item.text}\n$\xa7q${item.cost}`) : void 0;
+                                    shop_form.button(`${item.text}\n$\xa7q${item.cost}`)
                                 }
                                 shop_form.show(player).then(res_nosel => {
+                                    player.setDynamicProperty('hgncb:pvp.is_shopping', false)
                                     if (res_nosel.canceled) {
-                                        player.setDynamicProperty('hgncb:pvp.is_shopping', false)
                                         return -1;
                                     } else {
-                                        player.setDynamicProperty('hgncb:pvp.is_shopping', false)
                                         let item = items[res_nosel.selection];
                                         if (item && coins >= item.cost) {
                                             item.on_buy(player)
@@ -637,10 +669,9 @@ let hg = {
                     }
                     lb_form.label(str)
                     lb_form.show(player).then(res => {
-                        if (res.canceled) {
-                            player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
+                        player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
+                        if (res.canceled)
                             return -1;
-                        } else player.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
                     });
                 }
             },
@@ -730,6 +761,7 @@ let hg = {
                         amplifier: 255,
                         particles: true
                     })
+                    player.teleport(player.location)
                 }
 
                 if (player.getGameMode() !== 'Creative') {
@@ -765,7 +797,7 @@ let hg = {
                     let leggings_level   = player.getDynamicProperty('hgncb:pvp.leggings_level'  ) ?? 0
                     let boots_level      = player.getDynamicProperty('hgncb:pvp.boots_level'     ) ?? 0
 
-                    helmet     .nameTag = `\xa7r\xa7eIron Helmet${helmet_level > 0 ? ` \xa7i[\xa7elvl. ${helmet_level}\xa7i]` : ''}t`
+                    helmet     .nameTag = `\xa7r\xa7eIron Helmet${helmet_level > 0 ? ` \xa7i[\xa7elvl. ${helmet_level}\xa7i]` : ''}`
                     chestplate .nameTag = `\xa7r\xa7eIron Chestplate${chestplate_level > 0 ? ` \xa7i[\xa7elvl. ${chestplate_level}\xa7i]` : ''}`
                     leggings   .nameTag = `\xa7r\xa7eIron Leggings${leggings_level > 0 ? ` \xa7i[\xa7elvl. ${leggings_level}\xa7i]` : ''}`
                     boots      .nameTag = `\xa7r\xa7eIron Boots${boots_level > 0 ? ` \xa7i[\xa7elvl. ${boots_level}\xa7i]` : ''}`
@@ -788,28 +820,28 @@ let hg = {
                     shield     .lockMode = 'slot'
                     
                     sword_level > 0 ? sword_enchantable.addEnchantment({
-                        level: sword_level,
+                        level: Math.min(sword_level, 5),
                         type: new s.EnchantmentType('sharpness')
                     }) : void 0;
                     axe_level   > 0 ? axe_enchantable.addEnchantment({
-                        level: axe_level,
+                        level: Math.min(axe_level, 5),
                         type: new s.EnchantmentType('sharpness')
                     }) : void 0;
 
                     helmet_level > 0 ? helmet_enchantable.addEnchantment({
-                        level: helmet_level,
+                        level: Math.min(helmet_level, 4),
                         type: new s.EnchantmentType('protection')
                     }) : void 0;
                     chestplate_level   > 0 ? chestplate_enchantable.addEnchantment({
-                        level: chestplate_level,
+                        level: Math.min(chestplate_level, 4),
                         type: new s.EnchantmentType('protection')
                     }) : void 0;
                     leggings_level > 0 ? leggings_enchantable.addEnchantment({
-                        level: leggings_level,
+                        level: Math.min(leggings_level, 4),
                         type: new s.EnchantmentType('protection')
                     }) : void 0;
                     boots_level   > 0 ? boots_enchantable.addEnchantment({
-                        level: boots_level,
+                        level: Math.min(boots_level, 4),
                         type: new s.EnchantmentType('protection')
                     }) : void 0;
 
@@ -1157,6 +1189,40 @@ let hg = {
                             volume: 2.0
                         })
                     }, 60)
+                } else {
+                    let player = e.player;
+                    for (let tag of player.getTags()) {
+                        if (tag.startsWith('hgncb:minigame.')) {
+                            let game = hg.minigames.find(g => g.id === tag.replace('hgncb:minigame.', ''));
+                            if (game) {
+                                switch (game.id) {
+                                    case 'pvp':
+                                        let block = hg.dimensions.overworld.getTopmostBlock({
+                                            x: (Math.random() * 10) + game.location.x,
+                                            z: (Math.random() * 10) + game.location.z
+                                        })
+                                        player.teleport({
+                                            x: block.x,
+                                            y: block.y + 1,
+                                            z: block.z
+                                        })
+                                        player.addEffect('instant_health', 60, {
+                                            amplifier: 255,
+                                            particles: true
+                                        }),
+                                        player.addEffect('resistance', 60, {
+                                            amplifier: 255,
+                                            particles: true
+                                        })
+                                        break;
+                                    case 'random_events':
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
                 }
             },
             projectileHitEntity: function(e) {
@@ -1286,7 +1352,7 @@ let hg = {
                     }
                 }
             }
-
+            s.system.currentTick % 3600 === 0 ? s.world.sendMessage('the owner is afk, he\'s left the game on overnight') : void 0;
             for (let game of hg.minigames) {
                 game.on_tick();
                 for (let npc_data of game.npcs) {
@@ -1464,7 +1530,7 @@ s.world.afterEvents.worldLoad.subscribe(() => {
                             let prop = args[0]
                             let name = args[1]
                             let value = isNaN(parseFloat(args[2])) ? args[2] : parseFloat(args[2])
-
+                            value = typeof hg.methods.parse_bool(value) !== 'undefined' ? hg.methods.parse_bool(value) : value;
                             let player = hg.dimensions.overworld.getPlayers({ name })[0]
                             if (player) {
                                 player.setDynamicProperty(prop, value)
@@ -1473,6 +1539,12 @@ s.world.afterEvents.worldLoad.subscribe(() => {
                             }
                         } catch (e) {
                             player.sendMessage(`\xa7cERROR \xa7f- \xa7f${e}`);
+                        }
+                        break;
+                    case 'no_shop':
+                        for (let player of s.world.getPlayers()) {
+                            player?.setDynamicProperty('hgncb:pvp.is_shopping', false)
+                            player?.setDynamicProperty('hgncb:pvp.is_viewing_leaderboard', false)
                         }
                         break;
                     default:
