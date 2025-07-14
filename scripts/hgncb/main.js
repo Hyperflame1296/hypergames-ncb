@@ -51,13 +51,9 @@ let hg = {
                     if (game) {
                         switch (game.id) {
                             case 'pvp':
-                                let in_combat = (s.system.currentTick - (target?.getDynamicProperty('hgncb:pvp.last_hit') ?? 0) < 300)
-                                if (in_combat) {
-                                    let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
-
-                                    if (target && target.typeId === 'minecraft:player') {
-                                        hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, method)
-                                    }
+                                let attacker = hg.dimensions.overworld.getPlayers().find(p => p.id === (target?.getDynamicProperty('hgncb:pvp.combat_id') ?? 0))
+                                if (target && target.typeId === 'minecraft:player') {
+                                    hg.minigames.find(m => m.id === 'pvp').methods.kill_trade(attacker, target, method)
                                 }
                                 break;
                             default:
@@ -258,117 +254,82 @@ let hg = {
                         target?.setDynamicProperty('hgncb:pvp.combat_id', undefined)
                     }
                     for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.pvp'] })) {
-                        if (attacker) {
-                            switch (method) {
-                                case 'contact':
-                                case 'entityAttack':
-                                        attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas slain by \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas slain`)
-                                    break;
-                                case 'maceSmash':
+                        switch (method) {
+                            case 'contact':
+                            case 'entityAttack':
                                     attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas smashed by \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas smashed`)
-                                    break;
-                                case 'projectile':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas shot by \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas shot`)
-                                    break;
-                                case 'clogPrevent':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged to \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged`)
-                                    break;
-                                case 'clog_prevent':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged to \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged`)
-                                    break;
-                                case 'fall':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell from a high place whilst trying to escape \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell from a high place`)
-                                    break;
-                                case 'fire':
-                                case 'fireTick':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death whilst trying to escape \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death`)
-                                    break;
-                                case 'lava':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7itried to swim in lava to escape \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7itried to swim in lava`)
-                                    break;
-                                case 'fireworks':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwent off with a bang whilst trying to escape \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwent off with a bang`)
-                                    break;
-                                case 'magma':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwalked into danger zone whilst trying to escape \xa7f${attacker.name}`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idiscovered floor was lava`)
-                                    break;
-                                case 'anvil':
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas crushed by \xa7f${attacker.name}\xa7i\'s fat ahh`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas squashed by a falling anvil`)
-                                    break;
-                                default:
-                                    attacker ? 
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied because of \xa7f${attacker.name}\xa7i.`)
-                                        :
-                                            player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied`)
-                                    break;
-                            }
-                        } else {
-                            switch (method) {
-                                case 'contact':
-                                case 'entityAttack':
-                                    
-                                    break;
-                                case 'maceSmash':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas obliterated.`)
-                                    break;
-                                case 'projectile':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas killed via projectile.`)
-                                    break;
-                                case 'clog_prevent':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged.`)
-                                    break;
-                                case 'fall':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell to their death.`)
-                                    break;
-                                case 'fire':
-                                case 'fireTick':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death.`)
-                                    break;
-                                case 'lava':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7imistook lava for a hottub.`)
-                                    break;
-                                case 'fireworks':
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas blown up by fireworks.`)
-                                    break;
-                                default:
-                                    player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied.`)
-                                    break;
-                            }
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas slain by \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas slain`)
+                                break;
+                            case 'maceSmash':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas smashed by \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas smashed`)
+                                break;
+                            case 'projectile':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas shot by \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas shot`)
+                                break;
+                            case 'clogPrevent':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged to \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged`)
+                                break;
+                            case 'clog_prevent':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged to \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7icombat logged`)
+                                break;
+                            case 'fall':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell from a high place whilst trying to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7ifell from a high place`)
+                                break;
+                            case 'fire':
+                            case 'fireTick':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death whilst trying to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iburned to death`)
+                                break;
+                            case 'lava':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7itried to swim in lava to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7itried to swim in lava`)
+                                break;
+                            case 'fireworks':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwent off with a bang whilst trying to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwent off with a bang`)
+                                break;
+                            case 'magma':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwalked into danger zone whilst trying to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idiscovered floor was lava`)
+                                break;
+                            case 'anvil':
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas squashed by a falling anvil whilst trying to escape \xa7f${attacker.name}`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7iwas squashed by a falling anvil`)
+                                break;
+                            default:
+                                attacker ? 
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied because of \xa7f${attacker.name}\xa7i.`)
+                                    :
+                                        player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name} \xa7idied`)
+                                break;
                         }
-                        
                     }
                 }
             },
