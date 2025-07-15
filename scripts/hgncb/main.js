@@ -33,9 +33,9 @@ let hg = {
         get_rank_level: function(player) {
             return (hg.ranks[player.name] ?? hg.ranks.default).level
         },
-        parse_bool: function(x) {
-            if (x.startsWith('true' )) return true;
-            if (x.startsWith('false')) return false;
+        parse_bool: function(x='') {
+            if (x.startsWith?.('true' )) return true;
+            if (x.startsWith?.('false')) return false;
             return;
         },
         clog_prevent: function(target, method) {
@@ -479,36 +479,65 @@ let hg = {
                                 text: 'Brute',
                                 id: 'brute',
                                 cost: 500,
-                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',').includes('brute'),
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('brute'),
                                 on_buy: player => {
-                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',')
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
                                     kits.push('brute')
                                     player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
-                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Brute)`)
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Brute Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
                                 }
                             },
                             {
                                 text: 'Tank',
                                 id: 'tank',
                                 cost: 750,
-                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',').includes('tank'),
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('tank'),
                                 on_buy: player => {
-                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',')
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
                                     kits.push('tank')
                                     player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
-                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Tank)`)
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Tank Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
+                                }
+                            },
+                            {
+                                text: 'Archer',
+                                id: 'archer',
+                                cost: 1000,
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('archer'),
+                                on_buy: player => {
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
+                                    kits.push('archer')
+                                    player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Archer Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
+                                }
+                            },
+                            {
+                                text: 'Feather',
+                                id: 'feather',
+                                cost: 1250,
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('feather'),
+                                on_buy: player => {
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
+                                    kits.push('feather')
+                                    player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Feather Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
                                 }
                             },
                             {
                                 text: 'Mace',
                                 id: 'mace',
                                 cost: 1500,
-                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',').includes('mace'),
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('mace'),
                                 on_buy: player => {
-                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? '').split(',')
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
                                     kits.push('mace')
                                     player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
-                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Mace)`)
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Mace Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
                                 }
                             }
                         ]
@@ -550,6 +579,9 @@ let hg = {
                                 count: 64
                             },
                         ],
+                        potions: [
+                            
+                        ],
                         armor: [
                             {
                                 name: 'minecraft:chainmail_helmet',
@@ -568,6 +600,163 @@ let hg = {
                             },
                             {
                                 name: 'minecraft:leather_boots',
+                                slot: 'Feet',
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:shield',
+                                slot: 'Offhand',
+                                enchantments: []
+                            }
+                        ]
+                    },
+                    {
+                        text: 'Archer',
+                        id: 'archer',
+                        items: [
+                            {
+                                name: 'minecraft:wooden_sword',
+                                slot: 0,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:wooden_axe',
+                                slot: 1,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:bow',
+                                slot: 2,
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'power'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'punch'
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'minecraft:golden_apple',
+                                slot: 3,
+                                enchantments: [],
+                                count: 16,
+                                runout_cd: 10
+                            },
+                            {
+                                name: 'minecraft:arrow',
+                                slot: 9,
+                                enchantments: [],
+                                count: 64
+                            },
+                        ],
+                        potions: [
+                            
+                        ],
+                        armor: [
+                            {
+                                name: 'minecraft:chainmail_helmet',
+                                slot: 'Head',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'minecraft:chainmail_chestplate',
+                                slot: 'Chest',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'thorns'
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'minecraft:chainmail_leggings',
+                                slot: 'Legs',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'minecraft:chainmail_boots',
+                                slot: 'Feet',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ]
+                            },
+                            {
+                                name: 'minecraft:shield',
+                                slot: 'Offhand',
+                                enchantments: []
+                            }
+                        ]
+                    },
+                    {
+                        text: 'Feather',
+                        id: 'feather',
+                        items: [
+                            {
+                                name: 'minecraft:iron_sword',
+                                slot: 0,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:stone_axe',
+                                slot: 1,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:golden_apple',
+                                slot: 2,
+                                enchantments: [],
+                                count: 4,
+                                runout_cd: 10
+                            }
+                        ],
+                        potions: [
+                            {
+                                slot: 3,
+                                opts: {
+                                    effect: 'SlowFalling',
+                                    liquid: 'Splash',
+                                    modifier: 'Normal'
+                                }
+                            },
+                        ],
+                        armor: [
+                            {
+                                name: 'minecraft:golden_helmet',
+                                slot: 'Head',
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:chainmail_chestplate',
+                                slot: 'Chest',
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:iron_leggings',
+                                slot: 'Legs',
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:chainmail_boots',
                                 slot: 'Feet',
                                 enchantments: []
                             },
@@ -599,9 +788,9 @@ let hg = {
                             },
                             {
                                 name: 'minecraft:wind_charge',
-                                slot: 3,
+                                slot: 2,
                                 enchantments: [],
-                                count: 64
+                                count: 16
                             },
                             {
                                 name: 'minecraft:golden_apple',
@@ -610,6 +799,9 @@ let hg = {
                                 count: 16,
                                 runout_cd: 10
                             },
+                        ],
+                        potions: [
+                            
                         ],
                         armor: [
                             {
@@ -655,6 +847,9 @@ let hg = {
                                 count: 32,
                                 runout_cd: 10
                             },
+                        ],
+                        potions: [
+                            
                         ],
                         armor: [
                             {
@@ -726,6 +921,9 @@ let hg = {
                                 runout_cd: 10
                             },
                         ],
+                        potions: [
+                            
+                        ],
                         armor: [
                             {
                                 name: 'minecraft:chainmail_chestplate',
@@ -766,7 +964,7 @@ let hg = {
                         }
                         let ms = false
                         if ((attacker_kills + 1) !== 0 && (attacker_kills + 1) % 50 === 0) {
-                            attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou win \xa7b400\xa7i coins!`)
+                            attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou win \xa7b500\xa7i coins!`)
                             ms = true
                             for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.kitpvp'] })) {
                                 player.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7f${attacker.name} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
@@ -777,11 +975,11 @@ let hg = {
                             }
                         }
                         attacker?.setDynamicProperty('hgncb:kitpvp.kills', attacker_kills + 1)
-                        attacker?.setDynamicProperty('hgncb:kitpvp.coins', attacker_coins + coins_earned + (ms ? 400 : 0))
+                        attacker?.setDynamicProperty('hgncb:kitpvp.coins', attacker_coins + coins_earned + (ms ? 500 : 0))
                         target?.setDynamicProperty('hgncb:kitpvp.coins', target_coins + 2)
                         attacker?.setDynamicProperty('hgncb:kitpvp.xp', attacker_xp + xp_earned)
                         attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou have won \xa7b${coins_earned}\xa7i gold and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target?.name}\xa7i!`)
-                        target?.sendMessage(`\xa7i[\xa7eX_X\xa7i] \xa7iYou have been slain by \xa7f${attacker?.name}\xa7i. You get \xa7b${2}\xa7i gold.`)
+                        attacker ? target?.sendMessage(`\xa7i[\xa7eX_X\xa7i] \xa7iYou have been slain by \xa7f${attacker?.name}\xa7i. You get \xa7b${2}\xa7i gold.`) : void 0;
                         target?.setDynamicProperty('hgncb:kitpvp.deaths', target_deaths + 1)
                         s.system.run(() => attacker_health?.resetToMaxValue())
                         s.system.run(() => {
@@ -906,7 +1104,7 @@ let hg = {
                     ks_form.label('\xa7i---\xa7bUNLOCKED KITS\xa7i---')
                     ks_form.label('\xa7bPlease select a kit\xa7f.')
                     for (let kit of kits) {
-                        ks_form.button(`${kit.text}`)
+                        ks_form.button(`${kit?.text}`)
                     }
                     ks_form.show(player).then(res => {
                         if (res.canceled) {
@@ -1020,19 +1218,34 @@ let hg = {
                     })
                     player.teleport(player.location)
                 }
+                let unlocked_kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
+                if (!unlocked_kits.includes('basic')) {
+                    unlocked_kits.push('basic')
+                    player.setDynamicProperty('hgncb:kitpvp.kits', unlocked_kits.join(','))
+                }
 
+                for (let kit of unlocked_kits) {
+                    let item_kit = this.properties.kits.find(k => k.id === kit)
+                    if (!item_kit) {
+                        unlocked_kits.splice(unlocked_kits.indexOf(kit), 1)
+                        player.setDynamicProperty('hgncb:kitpvp.kits', unlocked_kits.join(','))
+                    }
+                }
                 if (player.getGameMode() !== 'Creative') {
                     if (!player.getDynamicProperty('hgncb:pvp.is_selecting_kit') && player.getDynamicProperty('hgncb:pvp.selected_kit')) {
                         let equippable = player.getComponent('minecraft:equippable')
                         let container = player.getComponent('minecraft:inventory').container
 
                         let kit = this.properties.kits.find(k => k.id === (player.getDynamicProperty('hgncb:pvp.selected_kit')))
-                        let shop = new s.ItemStack('minecraft:enchanted_golden_apple', 1)
-                        let leaderboard = new s.ItemStack('minecraft:spider_eye', 1)
+                        let shop = new s.ItemStack('minecraft:potion', 1)
+                        let leaderboard = new s.ItemStack('minecraft:enchanted_golden_apple', 1)
+
+                        shop.nameTag = '\xa7r\xa7eShop'
+                        leaderboard.nameTag = '\xa7r\xa7bLeaderboard'
                         
                         for (let item of kit.items) {
                             let stack = new s.ItemStack(item.name, item.count ?? 1)
-
+                            stack.lockMode = 'slot'
                             let enchantable = stack.getComponent('minecraft:enchantable');
                             for (let enchantment of item.enchantments) {
                                 enchantable?.addEnchantment({
@@ -1043,9 +1256,15 @@ let hg = {
                             container.getItem(item.slot)?.typeId !== stack.typeId ? container.setItem(item.slot, stack) : void 0;
                         }
 
+                        for (let potion of kit.potions) {
+                            let stack = s.ItemStack.createPotion(potion.opts)
+                            stack.lockMode = 'slot'
+                            container.getItem(potion.slot)?.typeId !== stack.typeId ? container.setItem(potion.slot, stack) : void 0;
+                        }
+
                         for (let armor of kit.armor) {
                             let stack = new s.ItemStack(armor.name, 1)
-
+                            stack.lockMode = 'slot'
                             let enchantable = stack.getComponent('minecraft:enchantable');
                             for (let enchantment of armor.enchantments) {
                                 enchantable?.addEnchantment({
@@ -1309,11 +1528,11 @@ let hg = {
                                     case 'kitpvp':
                                         if (item) {
                                             switch (item.typeId) {
-                                                case 'minecraft:enchanted_golden_apple':
+                                                case 'minecraft:potion':
                                                     e.cancel = true
                                                     s.system.run(() => game.methods.show_shop(player))
                                                     break;
-                                                case 'minecraft:spider_eye':
+                                                case 'minecraft:enchanted_golden_apple':
                                                     e.cancel = true
                                                     s.system.run(() => game.methods.show_leaderboard(player))
                                                     break;
@@ -1415,6 +1634,7 @@ let hg = {
                                             z: block.z
                                         })
                                         s.system.run(() => game.methods.show_kit_sel(player))
+                                        player.runCommand('clear @s[m=!c]')
                                         break;
                                     case 'random_events':
                                         break;
