@@ -49,6 +49,10 @@
         {
             "uuid": "2210b699-e1ad-4661-ba07-f4e8ad236aaa",
             "version": [ 0, 2, 2 ]
+        },
+        {
+            "uuid": "a1dcda6b-a751-4838-a7aa-aede21bbfb13",
+            "version": [ 1, 5, 2 ]
         }
     ],
     "metadata": {
