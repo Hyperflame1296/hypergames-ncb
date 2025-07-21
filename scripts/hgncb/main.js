@@ -412,6 +412,13 @@ let hg = {
                 '\xa7i[\xa7aAdmin\xa7i]'
             ]
         },
+        RekeneiZsolt:  {
+            level: 1,
+            text: [
+                '\xa7i[\xa7cY\xa7iT\xa7i]',
+                '\xa7i[\xa7bModerator\xa7i]',
+            ]
+        },
         MarzzMC4164:  {
             level: 0,
             text: [
@@ -429,13 +436,6 @@ let hg = {
             level: 0,
             text: [
                 '\xa7i[\xa7sOG\xa7i]'
-            ]
-        },
-        RekeneiZsolt:  {
-            level: 0,
-            text: [
-                '\xa7i[\xa7cY\xa7iT\xa7i]',
-                '\xa7i[\xa7sOG\xa7i]',
             ]
         }
     },
@@ -565,7 +565,7 @@ let hg = {
                 
             ],
             properties: {
-                // #region pvp_shop
+                // #region kitpvp_shop
                 shop: [
                     {
                         section_id: 'boosts',
@@ -788,8 +788,8 @@ let hg = {
                         ]
                     }
                 ],
-                // #endregion pvp_shop
-                // #region pvp_kits
+                // #endregion kitpvp_shop
+                // #region kitpvp_kits
                 kits: [
                     {
                         text: '\xa7eBasic',
@@ -1628,10 +1628,10 @@ let hg = {
                         ]
                     }
                 ]
-                // #endregion pvp_kits
+                // #endregion kitpvp_kits
             },
             methods: {
-                // #region kill_trade
+                // #region kitpvp_kill_trade
                 kill_trade: function(attacker, target, method='contact') {
                     if (!attacker || !attacker.isValid)
                         return;
@@ -1701,10 +1701,12 @@ let hg = {
                             s.system.run(() => attacker_health?.resetToMaxValue())
                             s.system.run(() => {
                                 for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.kitpvp'] })) {
-                                    if (player?.id !== attacker?.id)
-                                        s.system.run(() => player?.  runCommand('playsound note.bell @s 1000 108 0 1 1 1'))
+                                    if (player?.id === player?.id)
+                                        player?.runCommand('playsound note.bell @s ~ ~ ~ 1 2   1')
+                                    else if (player?.id === target?.id)
+                                        player?.runCommand('playsound note.hat  @s ~ ~ ~ 1 0.5 1')
                                     else
-                                        s.system.run(() => attacker?.runCommand('playsound note.bell @s 1000 108 0 2 2 2'))
+                                        player?.runCommand('playsound note.bell @s ~ ~ ~ 1   1 1')
                                 }
                             })
                             attacker?.setDynamicProperty('hgncb:timer.kitpvp.combat', undefined)
@@ -1715,8 +1717,14 @@ let hg = {
                             let target_kills    = target?.getDynamicProperty('hgncb:kitpvp.kills')  ?? 0;
                             let target_deaths   = target?.getDynamicProperty('hgncb:kitpvp.deaths') ?? 0;
                             target?.setDynamicProperty('hgncb:kitpvp.deaths', target_deaths ?? + 1)
-                            s.system.run(() => hg.dimensions.overworld.runCommand('playsound note.bell @a[tag="hgncb:minigame.kitpvp"] 1000 108 0 1 1 1'))
-
+                            s.system.run(() => {
+                                for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.kitpvp'] })) {
+                                    if (player?.id === target?.id)
+                                        player?.runCommand('playsound note.hat  @s ~ ~ ~ 1 0.5 1')
+                                    else
+                                        player?.runCommand('playsound note.bell @s ~ ~ ~ 1   1 1')
+                                }
+                            })
                             target?.setDynamicProperty('hgncb:timer.kitpvp.combat', undefined)
                             target?.setDynamicProperty('hgncb:kitpvp.combat_id', undefined)
                         }
@@ -1726,8 +1734,8 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 },
-                // #endregion kill_trade
-                // #region show_shop
+                // #endregion kitpvp_kill_trade
+                // #region kitpvp_show_shop
                 show_shop: function(player, kitsel) {
                     if (!player || !player.isValid)
                         return;
@@ -1739,13 +1747,14 @@ let hg = {
                         let coins = player.getDynamicProperty('hgncb:kitpvp.coins') ?? 0
                         let xp = player.getDynamicProperty('hgncb:kitpvp.xp') ?? 0
                         let sections = kitpvp.properties.shop
+                        shop_form_sel.label(`Shop`)
                         shop_form_sel.label(`\xa7i---\xa7bSHOP\xa7i---\n\xa7fYou currently have \xa7b${coins}\xa7f gold.\nYou also have \xa7a${xp}\xa7f XP.`)
                         shop_form_sel.label(`\xa7f\xa7bCategories\xa7f:`)
                         
                         for (let section of sections) {
                             shop_form_sel.button(section.section_name);
                         }
-                        player.setDynamicProperty('hgncb:kitpvp.is_shopping', true)
+                        !kitsel ? player.setDynamicProperty('hgncb:kitpvp.is_shopping', true) : void 0;
                         shop_form_sel.show(player).then(res => {
                             if (!player || !player.isValid)
                                 return -1;
@@ -1755,6 +1764,7 @@ let hg = {
                                 return -1;
                             } else {
                                 let shop_form = new ui.ActionFormData();
+                                shop_form.label(kitpvp.properties.shop[res.selection].section_name)
                                 let items = kitpvp.properties.shop[res.selection].items.filter(i => i.condition(player))
                                 if (items) {
                                     shop_form.label(`\xa7fYou currently have \xa7b${coins}\xa7f gold\xa7f.`)
@@ -1794,13 +1804,14 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 },
-                // #endregion show_shop
-                // #region show_leaderboard
+                // #endregion kitpvp_show_shop
+                // #region kitpvp_leaderboard
                 show_leaderboard: function(player, kitsel) {
                     if (!player || !player.isValid)
                         return;
                     try {
                         let lb_form = new ui.ActionFormData();
+                        lb_form.title('Leaderboard')
                         lb_form.label('\xa7i---\xa7bLEADERBOARD\xa7i---')
                         let players = s.world.getPlayers({ tags: ['hgncb:minigame.kitpvp'] }).sort((a, b) => {
                             let kills_a  = a.getDynamicProperty('hgncb:kitpvp.kills') ?? 0
@@ -1839,7 +1850,7 @@ let hg = {
                         lb_form.show(player).then(res => {
                             if (!player || !player.isValid)
                                 return -1;
-                            player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                            !kitsel ? player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false) : void 0;
                             if (res.canceled) {
                                 kitsel ? this.show_kit_sel(player) : void 0;
                                 return -1;
@@ -1851,8 +1862,42 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 },
-                // #endregion show_leaderboard
-                // #region show_kit_sel
+                // #endregion kitpvp_show_leaderboard
+                // #region kitpvp_show_leave
+                show_leave: function(player, kitsel) {
+                    if (!player || !player.isValid)
+                        return;
+                    try {
+                        let l_form = new ui.ActionFormData();
+                        l_form.title('Leave')
+                        l_form.label('\xa7cAre you sure you want to leave KitPVP\xa7f?')
+                        
+                        l_form.button('Yes'),
+                        l_form.button('No')
+                        l_form.show(player).then(res => {
+                            if (!player || !player.isValid)
+                                return -1;
+                            if (res.canceled) {
+                                kitsel ? this.show_kit_sel(player) : void 0;
+                                return -1;
+                            } else if (res.selection === 0) {
+                                player.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                                player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                                player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
+                                hg.minigames.find(m => m.id === 'hub').on_enter(player)
+                            } else {
+                                kitsel ? this.show_kit_sel(player) : void 0;
+                                return -1;
+                            }
+                        }).catch(err => {
+                            s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
+                        });
+                    } catch (err) {
+                        s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
+                    }
+                },
+                // #endregion kitpvp_show_leave
+                // #region kitpvp_show_kit_sel
                 show_kit_sel: function(player) {
                     if (!player || !player.isValid)
                         return;
@@ -1882,6 +1927,7 @@ let hg = {
                         let n_kits = []
                         let shop = 43;
                         let leaderboard = 42;
+                        let leave = 37;
                         for (let i = 0; i < kits.length; i++) {
                             let kit = kits[i]
                             if (typeof kits[i] === 'undefined') continue;
@@ -1891,6 +1937,7 @@ let hg = {
                         }
                         ks_form.button(shop, '\xa7eShop\xa7r', [], 'minecraft:potion', 1, 0, true)
                         ks_form.button(leaderboard, '\xa7bLeaderboard\xa7r', [], 'minecraft:golden_apple', 1, 0, true)
+                        ks_form.button(leave, '\xa7c\xa7lLeave\xa7r', [], 'minecraft:barrier', 1, 0, false)
                         ks_form.show(player).then(res => {
                             if (!player || !player.isValid)
                                 return -1;
@@ -1906,6 +1953,10 @@ let hg = {
                                 } else if (res.selection === leaderboard) {
                                     player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', true)
                                     this.show_leaderboard(player, true);
+                                    return -1
+                                } else if (res.selection === leave) {
+                                    player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', true)
+                                    this.show_leave(player, true);
                                     return -1
                                 } else {
                                     let selection = n_kits.find(k => k[0] === res.selection)?.[1]
@@ -1939,7 +1990,7 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 }
-                // #endregion show_kit_sel
+                // #endregion kitpvp_show_kit_sel
             },
             effects: [
                 {
@@ -1960,6 +2011,7 @@ let hg = {
                 y: 101,
                 z: 0.5
             },
+            // #region kitpvp_onenter
             on_enter: function(player) {
                 try {
                     player.teleport(this.location, {
@@ -1975,6 +2027,9 @@ let hg = {
                             player.removeTag(tag);
                         }
                     }
+                    player.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                    player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                    player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
                     this.methods.show_kit_sel(player)
                     player.runCommand('effect @s clear')
                     player.addTag(`hgncb:minigame.${this.id}`);
@@ -1984,11 +2039,14 @@ let hg = {
                     s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                 }
             },
+            // #endregion kitpvp_onenter
+            // #region kitpvp_ontick
             on_tick: function() {
                 
             },
+            // #endregion kitpvp_ontick
+            // #region kitpvp_foreach
             for_each_player: function(player) {
-                // #region pvp_foreach
                 if (player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Survival')
                     player.setGameMode('Survival')
                 let health = player.getComponent('minecraft:health')
@@ -2160,8 +2218,8 @@ let hg = {
                         }) : void 0;
                     }
                 }
-                // #endregion pvp_foreach
             }
+            // #endregion kitpvp_foreach
         },
         {
             name: 'Random Events',
@@ -2176,6 +2234,7 @@ let hg = {
                 
             ],
             properties: {
+                // #region re_events
                 events: [
                     {
                         text: '\xa7bIt\'s raining, it\'s pouring, we catch the tiger snoring-- \xa7oWait... that\'s not right...',
@@ -2429,8 +2488,10 @@ let hg = {
                         }
                     },
                 ]
+                // #endregion re_events
             },
             methods: {
+                // #re_reset
                 reset: function() {
                     let game = hg.minigames.find(m => m.id === 'random_events')
                     let players_creative = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'] })
@@ -2475,6 +2536,8 @@ let hg = {
                         }
                     }
                 },
+                // #endregion re_reset
+                // #region re_play_event
                 play_event: id => {
                     try {
                     let game = hg.minigames.find(m => m.id === 'random_events')
@@ -2494,6 +2557,8 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 },
+                // #endregion re_play_event
+                // #region re_play_random_event
                 play_random_event: () => {
                     try {
                         let game = hg.minigames.find(m => m.id === 'random_events')
@@ -2513,14 +2578,23 @@ let hg = {
                         s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                     }
                 },
+                // #endregion re_play_random_event
+                // #region re_player_die
                 player_die: function(attacker, target, method) {
                     let game_started            = (s.world.getDynamicProperty('hgncb:timer.random_events.game_start'       ) ?? 0) <= 0;
                     let someone_won             = (s.world.getDynamicProperty('hgncb:timer.random_events.win_timer'        ) ?? 0) >  0;
                     if (!target.hasTag('hgncb:random_events.dead') && game_started && !someone_won) {
                         hg.methods.death_message(attacker, target, method, { tags: ['hgncb:minigame.random_events'] })
                         target.addTag('hgncb:random_events.dead')
+
+                        s.system.run(() => {
+                            for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'] })) {
+                                player?.runCommand('playsound note.hat @s ~ ~ ~ 1 0.5 1')
+                            }
+                        })
                     }
                 }
+                // #endregion re_player_die
             },
             effects: [
                 {
@@ -2541,6 +2615,7 @@ let hg = {
                 y: 301,
                 z: 0.5
             },
+            // #region re_onenter
             on_enter: function(player) {
                 try {
                     player.teleport(this.location, {
@@ -2562,6 +2637,8 @@ let hg = {
                     s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                 }
             },
+            // #endregion re_onenter
+            // #region re_ontick
             on_tick: function() {
                 let game_started            = (s.world.getDynamicProperty('hgncb:timer.random_events.game_start'       ) ?? 0) <= 0;
                 let someone_won             = (s.world.getDynamicProperty('hgncb:timer.random_events.win_timer'        ) ?? 0) >  0;
@@ -2768,6 +2845,8 @@ let hg = {
                     }
                 }
             },
+            // #endregion re_ontick
+            // #region re_foreach
             for_each_player: function(player) {
                 let game_started            = (s.world.getDynamicProperty('hgncb:timer.random_events.game_start'       ) ?? 0) <= 0;
                 let someone_won             = (s.world.getDynamicProperty('hgncb:timer.random_events.win_timer'        ) ?? 0) >  0;
@@ -2912,6 +2991,7 @@ let hg = {
                 if (is_dead && player.getGameMode() !== 'Spectator')
                     player.setGameMode('Spectator')
             }
+            // #endregion re_foreach
         },
         {
             name: 'Hunger Games',
@@ -2997,7 +3077,7 @@ let hg = {
     command_prefix: '!',
     listeners: {
         before_events: {
-            // #region chatsend
+            // #region listen_chatsend
             chatSend: function(e) {
                 e.cancel = true; // cancel the chat message
                 try {
@@ -3035,8 +3115,8 @@ let hg = {
                     s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                 }
             },
-            // #endregion chatsend
-            // #region itemuse
+            // #endregion listen_chatsend
+            // #region listen_itemuse
             itemUse: function(e) {
                 try {
                     let player = e.source;
@@ -3199,14 +3279,14 @@ let hg = {
                     s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
                 }
             },
-            // #endregion itemuse
-            // #region playerleave
+            // #endregion listen_itemuse
+            // #region listen_playerleave
             playerLeave: function(e) {
                 let target = e.player
                 hg.methods.clog_prevent(target)
             },
-            // #endregion playerleave
-            // #region playerbreakblock
+            // #endregion listen_playerleave
+            // #region listen_playerbreakblock
             playerBreakBlock: function(e) {
                 // runs when a player breaks a block
                 let player = e.player;
@@ -3222,8 +3302,8 @@ let hg = {
                     }
                 }
             },
-            // #endregion playerbreakblock
-            // #region playerplaceblock
+            // #endregion listen_playerbreakblock
+            // #region listen_playerplaceblock
             playerPlaceBlock: function(e) {
                 // runs when a player places a block
                 let player = e.player;
@@ -3239,8 +3319,8 @@ let hg = {
                     }
                 }
             },
-            // #endregion playerplaceblock
-            // #region playerinteractwithblock
+            // #endregion listen_playerplaceblock
+            // #region listen_playerinteractwithblock
             playerInteractWithBlock: function(e) {
                 // runs when a player interacts with a block
                 let player = e.player;
@@ -3256,10 +3336,10 @@ let hg = {
                     }
                 }
             }
-            // #endregion playerinteractwithblock
+            // #endregion listen_playerinteractwithblock
         },
         after_events: {
-            // #region playerspawn
+            // #region listen_playerspawn
             playerSpawn: function(e) {
                 // runs when a player spawns
                 if (e.initialSpawn) {
@@ -3300,6 +3380,9 @@ let hg = {
                                             y: block.y + 1,
                                             z: block.z
                                         })
+                                        e.player?.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                                        e.player?.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                                        e.player?.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
                                         s.system.run(() => game.methods.show_kit_sel(player))
                                         player.runCommand('clear @s[m=!c]')
                                         break;
@@ -3313,8 +3396,8 @@ let hg = {
                     }
                 }
             },
-            // #endregion playerspawn
-            // #region projectilehitentity
+            // #endregion listen_playerspawn
+            // #region listen_projectilehitentity
             projectileHitEntity: function(e) {
                 let attacker = e.source;
                 let target = e.getEntityHit().entity;
@@ -3342,8 +3425,8 @@ let hg = {
                     target?.setDynamicProperty('hgncb:kitpvp.combat_id', attacker.id)
                 }
             },
-            // #endregion projectilehitentity
-            // #region entityhitentity
+            // #endregion listen_projectilehitentity
+            // #region listen_entityhitentity
             entityHitEntity: function(e) {
                 let attacker = e.damagingEntity;
                 let target = e.hitEntity;
@@ -3363,8 +3446,8 @@ let hg = {
                     target?.setDynamicProperty('hgncb:kitpvp.combat_id', attacker.id)
                 }
             },
-            // #endregion entityhitentity
-            // #region entitydie
+            // #endregion listen_entityhitentity
+            // #region listen_entitydie
             entityDie: function(e) {
                 let attacker = e.damageSource.damagingEntity;
                 let target = e.deadEntity;
@@ -3374,7 +3457,7 @@ let hg = {
                 else if (attacker && target && target.typeId === 'minecraft:player')
                     hg.methods.global_death_handle(attacker, target, e.damageSource.cause)
             }
-            // #endregion entitydie
+            // #endregion listen_entitydie
         }
     },
     listeners_system: {
@@ -3385,8 +3468,8 @@ let hg = {
             
         }
     },
+    // #region global_ontick
     on_tick: function() {
-        // #region global_ontick
         s.system.runInterval(() => {
             // runs every game tick
             let w_props = s.world.getDynamicPropertyIds()
@@ -3480,12 +3563,14 @@ let hg = {
                 }
             }
         })
-        // #endregion global_ontick
     },
+    // #endregion global_ontick
+    // #region global_onload
     on_load: function() {
         // runs when the script is loaded
         s.world.sendMessage(`\xa7bHyperGames \xa7i-\xa7f Script reloaded\xa7i!`);
     }
+    // #endregion global_onload
 }
 
 s.world.afterEvents.worldLoad.subscribe(() => {
