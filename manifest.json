@@ -4,21 +4,21 @@
         "name": "bp - hypergames ncb",
         "description": "tensive decided to redo the entirety of hypergames. again.",
         "uuid": "f791dd4f-f7e4-4bf3-b40d-67f977bc5b9f",
-        "version": [ 0, 2, 2 ],
-        "min_engine_version": [ 1, 21, 90 ]
+        "version": [ 0, 2, 3 ],
+        "min_engine_version": [ 1, 21, 100 ]
     },
     "modules": [
         {
-            "description": "bp0.2.2",
+            "description": "bp0.2.3",
             "type": "data",
             "uuid": "741ef8fd-ceee-4725-b55f-23ab81fd5f49",
-            "version": [ 0, 2, 2 ]
+            "version": [ 0, 2, 3 ]
         },
         {
-            "description": "bp0.2.2",
+            "description": "bp0.2.3",
             "type": "script",
             "uuid": "07f0eb75-52ac-449b-bb16-a1ec94fdf8ff",
-            "version": [ 0, 2, 2 ],
+            "version": [ 0, 2, 3 ],
             "entry": "scripts/hgncb/main.js"
         }
     ],
@@ -28,7 +28,7 @@
     "dependencies": [
         {
             "module_name": "@minecraft/server",
-            "version": "2.1.0-beta"
+            "version": "2.2.0-beta"
         },
         {
             "module_name": "@minecraft/server-ui",
@@ -48,11 +48,11 @@
         },
         {
             "uuid": "2210b699-e1ad-4661-ba07-f4e8ad236aaa",
-            "version": [ 0, 2, 2 ]
+            "version": [ 0, 2, 3 ]
         },
         {
-            "uuid": "a1dcda6b-a751-4838-a7aa-aede21bbfb13",
-            "version": [ 1, 5, 2 ]
+            "uuid": "1fbf967d-86d1-4b29-8bbe-2547c95d2a42",
+            "version": [ 0, 1, 7 ]
         }
     ],
     "metadata": {

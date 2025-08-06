@@ -5,7 +5,31 @@
             "identifier": "minecraft:player",
             "spawn_category": "creature",
             "is_spawnable": false,
-            "is_summonable": false
+            "is_summonable": false,
+            "properties": {
+                "njmp:player.attack_meter": {
+                    "type": "float",
+                    "client_sync": true,
+                    "default": 0.0,
+                    "range": [0.0, 1.0]
+                },
+
+                "njmp:player.looking_at_entity": {
+                    "type": "bool",
+                    "client_sync": true,
+                    "default": false
+                },
+                "njmp:player.holding_weapon": {
+                    "type": "bool",
+                    "client_sync": true,
+                    "default": false
+                },
+                "njmp:player.blocking": {
+                    "type": "bool",
+                    "client_sync": true,
+                    "default": false
+                }
+            }
         },
         "component_groups": {
             "minecraft:add_raid_omen": {
@@ -40,6 +64,16 @@
                         "event": "minecraft:remove_raid_trigger",
                         "target": "self"
                     }
+                }
+            },
+            "njmp:player.1.9_pvp_enabled": {
+                "minecraft:attack": {
+                    "damage": -2147483648
+                }
+            },
+            "njmp:player.1.9_pvp_disabled": {
+                "minecraft:attack": {
+                    "damage": 1
                 }
             }
         },
@@ -100,6 +134,29 @@
                                 ]
                             }
                         },
+                        "deals_damage": false
+                    },
+                    {
+                        "on_damage": {
+                            "filters": {
+                                "any_of": [
+                                    {
+                                        "all_of": [
+                                            {
+                                                "test": "has_tag",
+                                                "value": "njmp:player.enable_1.9_pvp"
+                                            },
+                                            {
+                                                "subject": "other",
+                                                "test": "has_tag",
+                                                "value": "njmp:player.enable_1.9_pvp"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        "cause": "entity_attack",
                         "deals_damage": false
                     }
                 ]
@@ -270,6 +327,30 @@
                 "remove": {
                     "component_groups": [
                         "minecraft:raid_trigger"
+                    ]
+                }
+            },
+            "njmp:enable_1.9_pvp": {
+                "add": {
+                    "component_groups": [
+                        "njmp:player.1.9_pvp_enabled"
+                    ]
+                },
+                "remove": {
+                    "component_groups": [
+                        "njmp:player.1.9_pvp_disabled"
+                    ]
+                }
+            },
+            "njmp:disable_1.9_pvp": {
+                "add": {
+                    "component_groups": [
+                        "njmp:player.1.9_pvp_disabled"
+                    ]
+                },
+                "remove": {
+                    "component_groups": [
+                        "njmp:player.1.9_pvp_enabled"
                     ]
                 }
             }

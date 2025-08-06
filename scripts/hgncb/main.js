@@ -30,9 +30,32 @@ let hg = {
         '    #\xa7b12 \xa7f- \xa7bNo admin abuse\xa7f.',
         '    #\xa7b13 \xa7f- \xa7bDo not interfere with games unless given permission by the owner\xa7f.',
         '    #\xa7b14 \xa7f- \xa7bDo not kick people without giving them warnings\xa7f.',
-        '    #\xa7b15 \xa7f- \xa7bIf someone accuses another person of doing something against the rules, you must first verify if they are telling the truth\xa7f.'
+        '    #\xa7b15 \xa7f- \xa7bIf someone accuses another person of breaking the rules, you must first verify if they are telling the truth\xa7f.'
+    ],
+    swears: [
+        'skibidi',
+        'sigma',
+        'rizz',
+        'gyatt',
+        'mew'
     ],
     methods: {
+        censor: input => {
+            for (let swear of hg.swears) {
+                let lowerSwear = swear.toLowerCase();
+
+                // Create a regex pattern allowing spaces between the letters
+                let pattern = lowerSwear.split('').join('\\s*');
+                let regex = new RegExp(pattern, 'gi');
+
+                input = input.replace(regex, match => {
+                    // Replace with asterisks matching the original swear length (not the match length)
+                    return '*'.repeat(swear.length);
+                });
+            }
+
+            return input;
+        },
         check_op: function(player) { // wrap the operator check, to make things easier
             try {
                 if (player.commandPermissionLevel >= 2) return true;
@@ -187,165 +210,165 @@ let hg = {
                     switch (method) {
                         case 'anvil':
                             attacker && attacker.isValid ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil`)
                             break;
                         case 'blockExplosion':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design] due to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design] due to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design]`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design]`)
                             break;
                         case 'campfire':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire`)
                             break;
                         case 'clogPrevent':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7icombat logged to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7icombat logged to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7icombat logged`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7icombat logged`)
                             break;
                         case 'contact':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas slain`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain`)
                             break;
                         case 'drowning':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idrowned whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idrowned whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idrowned`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idrowned`)
                             break;
                         case 'entityAttack':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas slain`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain`)
                             break;
                         case 'entityExplosion':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas blown up by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas blown up by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iblew up`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iblew up`)
                             break;
                         case 'fall':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place`)
                             break;
                         case 'fallingBlock':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block`)
                             break;
                         case 'fire':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwalked into fire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into fire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwent up in flames`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent up in flames`)
                             break;
                         case 'fireTick':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iburned to death whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iburned to death whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iburned to death`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iburned to death`)
                             break;
                         case 'fireworks':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang`)
                             break;
                         case 'fly_into_wall':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy`)
                             break;
                         case 'freezing':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ibecame an ice block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ibecame an ice block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ifroze to death`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifroze to death`)
                             break;
                         case 'lava':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                                 :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava`)
                             break;
                         case 'lightning':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                                 :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning`)
                             break;
                         case 'maceSmash':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas smashed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas smashed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas smashed`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas smashed`)
                             break;
                         case 'magic':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i using magic`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i using magic`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by magic`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by magic`)
                             break;
                         case 'magma':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwalked into danger zone whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into danger zone whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idiscovered floor was lava`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idiscovered floor was lava`)
                             break;
                         case 'none':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'override':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'piston':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a piston due to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i.`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a piston due to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i.`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a piston`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a piston`)
                             break;
                         case 'projectile':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas shot by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas shot by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas shot`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas shot`)
                             break;
                         case 'sonicBoom':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated`)
                             break;
                         case 'void':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ididn\'t want to live in the same world as \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ididn\'t want to live in the same world as \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7ifell out of the world`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell out of the world`)
                             break;
                         default:
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7i[\xa7cX_X\xa7i] \xa7f${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                     }
                 }
@@ -364,7 +387,6 @@ let hg = {
         TensiveYT: {
             level: 4,
             text: [
-                '\xa7i[\xa7cY\xa7iT\xa7i]',
                 '\xa7i[\xa76Owner\xa7i]'
             ]
         },
@@ -383,7 +405,7 @@ let hg = {
                 '\xa7i[\xa7aAdmin\xa7i]'
             ]
         },
-        Dragonhunteron:  {
+        DragioPlays:  {
             level: 2,
             text: [
                 '\xa7i[\xa7bBuilder\xa7i]',
@@ -415,14 +437,12 @@ let hg = {
         RekeneiZsolt:  {
             level: 1,
             text: [
-                '\xa7i[\xa7cY\xa7iT\xa7i]',
                 '\xa7i[\xa7bModerator\xa7i]',
             ]
         },
         MarzzMC4164:  {
             level: 0,
             text: [
-                '\xa7i[\xa7cY\xa7iT\xa7i]',
                 '\xa7i[\xa7sTrue OG\xa7i]',
             ]
         },
@@ -447,6 +467,9 @@ let hg = {
                 place_block: false,
                 break_block: false,
                 interact_with_block: false,
+                java_pvp: true,
+                java_pvp_attack_players: false,
+                java_pvp_attack_entities: true
             },
             desc: 'hypergames hub',
             npcs: [
@@ -488,13 +511,13 @@ let hg = {
                 },
                 {
                     id: 'instant_health',
-                    duration: 60,
+                    duration: 10,
                     amplifier: 255,
                     particles: false
                 },
                 {
                     id: 'saturation',
-                    duration: 220,
+                    duration: 10,
                     amplifier: 255,
                     particles: false
                 }
@@ -543,7 +566,6 @@ let hg = {
                     player.setGameMode('Survival')
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
-
                 player.onScreenDisplay.setActionBar([
                     `\xa7bWelcome to HyperGames!\n`,
                     `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
@@ -559,6 +581,9 @@ let hg = {
                 place_block: false,
                 break_block: false,
                 interact_with_block: false,
+                java_pvp: false,
+                java_pvp_attack_players: true,
+                java_pvp_attack_entities: true
             },
             desc: 'PVP - but revamped with new kits!',
             npcs: [
@@ -648,7 +673,7 @@ let hg = {
                                     })
                                     player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought boost! \xa7i(Resistance 3)`)
                                 }
-                            },
+                            }
                         ]
                     },
                     {
@@ -704,6 +729,19 @@ let hg = {
                                     kits.push('archer')
                                     player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
                                     player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(Archer Kit)`)
+                                    player.runCommand('clear @s[m=!c]')
+                                }
+                            },
+                            {
+                                text: 'French',
+                                id: 'french',
+                                cost: 1000,
+                                condition: player => !(player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',').includes('french'),
+                                on_buy: player => {
+                                    let kits = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
+                                    kits.push('french')
+                                    player.setDynamicProperty('hgncb:kitpvp.kits', kits.join(','))
+                                    player.sendMessage(`\xa7eShop \xa7i»\xa7e Successfully bought kit! \xa7i(French Kit)`)
                                     player.runCommand('clear @s[m=!c]')
                                 }
                             },
@@ -794,17 +832,17 @@ let hg = {
                     {
                         text: '\xa7eBasic',
                         id: 'basic',
-                        icon: 'minecraft:stone_sword',
+                        icon: 'minecraft:shield',
                         desc: ['\xa78the default kit'],
                         ench: false,
                         items: [
                             {
-                                name: 'minecraft:stone_sword',
+                                name: 'minecraft:iron_sword',
                                 slot: 0,
                                 enchantments: []
                             },
                             {
-                                name: 'minecraft:stone_axe',
+                                name: 'minecraft:iron_axe',
                                 slot: 1,
                                 enchantments: []
                             },
@@ -839,23 +877,123 @@ let hg = {
                             {
                                 name: 'minecraft:iron_helmet',
                                 slot: 'Head',
-                                enchantments: []
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
                             },
                             {
                                 name: 'minecraft:leather_chestplate',
                                 slot: 'Chest',
-                                enchantments: [],
-                                components: {}
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
                             },
                             {
                                 name: 'minecraft:iron_leggings',
                                 slot: 'Legs',
-                                enchantments: []
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
                             },
                             {
                                 name: 'minecraft:leather_boots',
                                 slot: 'Feet',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
+                            },
+                            {
+                                name: 'minecraft:shield',
+                                slot: 'Offhand',
                                 enchantments: []
+                            }
+                        ]
+                    },
+                    {
+                        text: '\xa7eFrench',
+                        id: 'french',
+                        icon: 'minecraft:bread',
+                        desc: ['\xa7vWith this kit, you get a Baguette that dealts a ton of knockback\xa7f!'],
+                        ench: true,
+                        items: [
+                            {
+                                name: 'minecraft:stone_axe',
+                                slot: 0,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:bread',
+                                slot: 1,
+                                enchantments: []
+                            },
+                            {
+                                name: 'minecraft:golden_apple',
+                                slot: 2,
+                                enchantments: [],
+                                count: 16
+                            },
+                            {
+                                name: 'minecraft:milk_bucket',
+                                slot: 3,
+                                enchantments: [],
+                                count: 1,
+                            }
+                        ],
+                        potions: [
+                            
+                        ],
+                        armor: [
+                            {
+                                name: 'minecraft:leather_helmet',
+                                slot: 'Head',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
+                            },
+                            {
+                                name: 'minecraft:leather_chestplate',
+                                slot: 'Chest',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
+                            },
+                            {
+                                name: 'minecraft:leather_leggings',
+                                slot: 'Legs',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
+                            },
+                            {
+                                name: 'minecraft:leather_boots',
+                                slot: 'Feet',
+                                enchantments: [
+                                    {
+                                        level: 1,
+                                        type: 'protection'
+                                    }
+                                ],
                             },
                             {
                                 name: 'minecraft:shield',
@@ -1001,7 +1139,7 @@ let hg = {
                         ],
                         potions: [
                             {
-                                slot: 3,
+                                slot: 4,
                                 opts: {
                                     effect: 'SlowFalling',
                                     liquid: 'Splash',
@@ -1416,7 +1554,7 @@ let hg = {
                         ench: true,
                         items: [
                             {
-                                name: 'minecraft:stone_axe',
+                                name: 'minecraft:golden_axe',
                                 slot: 0,
                                 enchantments: []
                             },
@@ -1466,18 +1604,8 @@ let hg = {
                                 enchantments: []
                             },
                             {
-                                name: 'minecraft:golden_chestplate',
-                                slot: 'Chest',
-                                enchantments: []
-                            },
-                            {
-                                name: 'minecraft:leather_leggings',
+                                name: 'minecraft:chainmail_leggings',
                                 slot: 'Legs',
-                                enchantments: []
-                            },
-                            {
-                                name: 'minecraft:golden_boots',
-                                slot: 'Feet',
                                 enchantments: []
                             },
                             {
@@ -1658,10 +1786,10 @@ let hg = {
                             }
                             let ms = false
                             if ((attacker_kills + 1) !== 0 && (attacker_kills + 1) % 50 === 0) {
-                                attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou win \xa7b500\xa7i coins!`)
+                                attacker?.sendMessage(`\xa7a^_^ \xa7i» \xa7iYou win \xa7b500\xa7i coins!`)
                                 ms = true
                                 for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.kitpvp'] })) {
-                                    player.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7f${attacker.name ?? `%${attacker.localizationKey}`} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
+                                    player.sendMessage(`\xa7a^_^ \xa7i» \xa7f${attacker.name ?? `%${attacker.localizationKey}`} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
                                     s.system.run(() => player.playSound('random.levelup', {
                                         pitch: 2.0,
                                         volume: 1.0
@@ -1681,21 +1809,16 @@ let hg = {
                             attacker?.setDynamicProperty('hgncb:timer.kitpvp.pot', 0)
                             attacker?.setDynamicProperty('hgncb:timer.kitpvp.sonic', 0)
                             attacker?.setDynamicProperty('hgncb:timer.kitpvp.wc', 0)
-
-                            s.system.run(() => attacker.addEffect('resistance', 10, {
-                                amplifier: 255,
-                                showParticles: true
-                            }))
-                            s.system.run(() => attacker.addEffect('instant_health', 10, {
-                                amplifier: 255,
-                                showParticles: true
-                            }))
+                            
+                            attacker?.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                            attacker?.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                            attacker?.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
 
                             attacker?.setDynamicProperty('hgncb:kitpvp.kills', attacker_kills + 1)
                             attacker?.setDynamicProperty('hgncb:kitpvp.coins', attacker_coins + coins_earned + (ms ? 500 : 0))
                             target?.setDynamicProperty('hgncb:kitpvp.coins', target_coins + 2)
                             attacker?.setDynamicProperty('hgncb:kitpvp.xp', attacker_xp + xp_earned)
-                            attacker?.sendMessage(`\xa7i[\xa7a^_^\xa7i] \xa7iYou have won \xa7b${coins_earned}\xa7i gold and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target?.name}\xa7i!`)
+                            attacker?.sendMessage(`\xa7a^_^ \xa7i» \xa7iYou have won \xa7b${coins_earned}\xa7i gold and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target?.name}\xa7i!`)
                             attacker ? target?.sendMessage(`\xa7i[\xa7eX_X\xa7i] \xa7iYou have been slain by \xa7f${attacker?.name ?? attacker?.nameTag ?? `%${attacker?.localizationKey}`}\xa7i. You get \xa7b${2}\xa7i gold.`) : void 0;
                             target?.setDynamicProperty('hgncb:kitpvp.deaths', target_deaths + 1)
                             s.system.run(() => attacker_health?.resetToMaxValue())
@@ -1747,8 +1870,8 @@ let hg = {
                         let coins = player.getDynamicProperty('hgncb:kitpvp.coins') ?? 0
                         let xp = player.getDynamicProperty('hgncb:kitpvp.xp') ?? 0
                         let sections = kitpvp.properties.shop
-                        shop_form_sel.label(`Shop`)
-                        shop_form_sel.label(`\xa7i---\xa7bSHOP\xa7i---\n\xa7fYou currently have \xa7b${coins}\xa7f gold.\nYou also have \xa7a${xp}\xa7f XP.`)
+                        shop_form_sel.title(`Shop`)
+                            .body(`\xa7i---\xa7bSHOP\xa7i---\n\xa7fYou currently have \xa7b${coins}\xa7f gold.\nYou also have \xa7a${xp}\xa7f XP.`)
                         shop_form_sel.label(`\xa7f\xa7bCategories\xa7f:`)
                         
                         for (let section of sections) {
@@ -1812,7 +1935,7 @@ let hg = {
                     try {
                         let lb_form = new ui.ActionFormData();
                         lb_form.title('Leaderboard')
-                        lb_form.label('\xa7i---\xa7bLEADERBOARD\xa7i---')
+                            .body('\xa7i---\xa7bLEADERBOARD\xa7i---')
                         let players = s.world.getPlayers({ tags: ['hgncb:minigame.kitpvp'] }).sort((a, b) => {
                             let kills_a  = a.getDynamicProperty('hgncb:kitpvp.kills') ?? 0
                             let deaths_a = a.getDynamicProperty('hgncb:kitpvp.deaths') ?? 0
@@ -1869,8 +1992,9 @@ let hg = {
                         return;
                     try {
                         let l_form = new ui.ActionFormData();
-                        l_form.title('Leave')
-                        l_form.label('\xa7cAre you sure you want to leave KitPVP\xa7f?')
+                        l_form
+                            .title('Leave')
+                            .body('\xa7cAre you sure you want to leave KitPVP\xa7f?')
                         
                         l_form.button('Yes'),
                         l_form.button('No')
@@ -1961,6 +2085,8 @@ let hg = {
                                 } else {
                                     let selection = n_kits.find(k => k[0] === res.selection)?.[1]
                                     if (selection) {
+                                        player.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                                        player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
                                         player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
                                         player.setDynamicProperty('hgncb:kitpvp.selected_kit', selection.id)
                                         player.runCommand('clear @s[m=!c]')
@@ -2049,6 +2175,7 @@ let hg = {
             for_each_player: function(player) {
                 if (player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Survival')
                     player.setGameMode('Survival')
+                
                 let health = player.getComponent('minecraft:health')
                 let health_percentage = (health.currentValue / health.effectiveMax) * 100
                 let health_color = (() => {
@@ -2096,20 +2223,16 @@ let hg = {
                         showParticles: false
                     })
                 }
-
-                if (player.getDynamicProperty('hgncb:kitpvp.is_shopping') || player.getDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard') || player.getDynamicProperty('hgncb:kitpvp.is_selecting_kit')) {
+                if (player.getDynamicProperty('hgncb:kitpvp.is_selecting_kit')) {
+                    player.addEffect('instant_health', 10, {
+                        amplifier: 255,
+                        showParticles: true
+                    })
                     player.addEffect('resistance', 10, {
                         amplifier: 255,
                         showParticles: true
                     })
                     player.addEffect('weakness', 10, {
-                        amplifier: 255,
-                        showParticles: true
-                    })
-                    
-                }
-                if (player.getDynamicProperty('hgncb:kitpvp.is_selecting_kit')) {
-                    player.addEffect('instant_health', 10, {
                         amplifier: 255,
                         showParticles: true
                     })
@@ -2228,6 +2351,9 @@ let hg = {
                 place_block: true,
                 break_block: true,
                 interact_with_block: true,
+                java_pvp: true,
+                java_pvp_attack_players: false,
+                java_pvp_attack_entities: true
             },
             desc: 'Random events happen every 10 seconds. Your goal is to be the last one standing.',
             npcs: [
@@ -2521,9 +2647,9 @@ let hg = {
                                 player.getGameMode() !== 'Survival' ? player.setGameMode('Survival') : void 0;
                                 player.extinguishFire()
                                 let pos = {
-                                    x: Math.cos((i / players.length) * (2 * Math.PI)) * 22.5 + game.location.x,
+                                    x: Math.cos((i / players.length) * (2 * Math.PI)) * 23 + game.location.x,
                                     y: game.location.y + 1,
-                                    z: Math.sin((i / players.length) * (2 * Math.PI)) * 22.5 + game.location.z
+                                    z: Math.sin((i / players.length) * (2 * Math.PI)) * 23 + game.location.z
                                 }
                                 s.system.run(() => player.teleport(pos, {
                                     facingLocation: {
@@ -2875,12 +3001,13 @@ let hg = {
                         return '\xa7a\xa7oViewing leaderboard...'
                     else return `\xa7aWins\xa7f: \xa7a${wins}\xa7r | \xa7cLosses\xa7f: \xa7c${losses}\xa7r`
                 })
+
                 player.nameTag = hg.methods.get_rank_text(player) + player.name + `\n${nametag_func()}`
                 player.onScreenDisplay.setActionBar([
                     `\xa7aWins\xa7f: ${wins}\n`,
                     `\xa7cLosses\xa7f: ${losses}\n`,
                     `\xa7bWLR\xa7f: ${wlr_b.toFixed(3)}\n`,
-                    `\xa7bTime left\xa7f: ${(time_left / 20).toFixed(2)}\n`,
+                    `\xa7bTime left\xa7f: ${(time_left / 20).toFixed(2)}s\n`,
                     `${game_can_continue ? `\xa7f${players_remaining}\xa7b players remaining\xa7f...` : `\xa7cRandom Events requires 2 or more players\xa7f.`}`,
                 ])
 
@@ -2977,7 +3104,7 @@ let hg = {
                     }
                 }
 
-                if (is_raining_lava || is_raining_insane_lava && !player.isInWater && !is_dead && player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Spectator') {
+                if (is_raining_lava || is_raining_insane_lava && !player.isInWater && !is_dead && player.getGameMode() !== 'Creative') {
                     let rc = hg.dimensions.overworld.getBlockFromRay(player.getHeadLocation(), { x: 0, y: 1, z: 0 }, {
                         includeLiquidBlocks: true,
                         includePassableBlocks: true
@@ -2988,10 +3115,101 @@ let hg = {
                         player.setOnFire(5)
                 }
 
-                if (is_dead && player.getGameMode() !== 'Spectator')
+                if (is_dead && player.getGameMode() !== 'Spectator' && player.getGameMode() !== 'Creative')
                     player.setGameMode('Spectator')
             }
             // #endregion re_foreach
+        },
+        {
+            name: 'Duels',
+            id: 'duels',
+            permissions: {
+                place_block: false,
+                break_block: false,
+                interact_with_block: false,
+                java_pvp: true,
+                java_pvp_attack_players: true,
+                java_pvp_attack_entities: true
+            },
+            desc: 'Duels! Fight to the death.',
+            npcs: [
+                
+            ],
+            properties: {
+                
+            },
+            methods: {
+                
+            },
+            effects: [
+                {
+                    id: 'night_vision',
+                    duration: 220,
+                    amplifier: 255,
+                    particles: false
+                },
+                {
+                    id: 'saturation',
+                    duration: 220,
+                    amplifier: 255,
+                    particles: false
+                }
+            ],
+            location: {
+                x: -1000.5,
+                y: 1,
+                z: -1000.5
+            },
+            on_enter: function(player) {
+                try {
+                    player.teleport(this.location, {
+                        facingLocation: {
+                            x: this.location.x,
+                            y: this.location.y + 2,
+                            z: this.location.z + 100
+                        }
+                    })
+                    // add & remove tags
+                    for (let tag of player.getTags()) {
+                        if (tag.startsWith('hgncb:minigame.')) {
+                            player.removeTag(tag);
+                        }
+                    }
+                    player.runCommand('effect @s clear')
+                    player.addTag(`hgncb:minigame.${this.id}`);
+                } catch (err) {
+                    s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
+                }
+            },
+            on_tick: function() {
+                let players_creative        = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.duels'] }).filter(p => p.isValid)
+                let players                 = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.duels'], excludeGameModes: ['Creative'] }).filter(p => p.isValid)
+                let players_alive           = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.duels'], excludeGameModes: ['Creative', 'Spectator'], excludeTags: ['hgncb:duels.dead'] }).filter(p => p.isValid)
+            },
+            for_each_player: function(player) {
+                if (player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Survival')
+                    player.setGameMode('Survival')
+                player.nameTag = hg.methods.get_rank_text(player) + player.name
+
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_sword         }] run give @s[tag="hgncb:minigame.duels"]                                      iron_sword          1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_axe           }] run give @s[tag="hgncb:minigame.duels"]                                      iron_axe            1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=bow                }] run give @s[tag="hgncb:minigame.duels"]                                      bow                 1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=cooked_beef        }] run give @s[tag="hgncb:minigame.duels"]                                      cooked_beef        64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=golden_apple       }] run give @s[tag="hgncb:minigame.duels"]                                      golden_apple       64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=shield             }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.weapon.offhand  0 shield              1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=diamond_helmet     }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.armor.head      0 diamond_helmet      1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=diamond_chestplate }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.armor.chest     0 diamond_chestplate  1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=diamond_leggings   }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.armor.legs      0 diamond_leggings    1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=diamond_boots      }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.armor.feet      0 diamond_boots       1 0 {"minecraft:item_lock":{"mode":"lock_in_slot"}}')
+                player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=arrow              }] run replaceitem entity @s[tag="hgncb:minigame.duels"] slot.inventory       0 arrow              64 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
+
+                player.onScreenDisplay.setActionBar([
+                    `\xa7bWelcome to HyperGames!\n`,
+                    `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
+                    `\xa7bYoutube\xa7f: \xa7ohttps://www.youtube.com/@Hyperflamee8\xa7r\n`,
+                    `\xa7bGithub\xa7f: \xa7ohttps://github.com/Hyperflame1296\xa7r\n`
+                ])
+            }
         },
         {
             name: 'Hunger Games',
@@ -3000,6 +3218,9 @@ let hg = {
                 place_block: false,
                 break_block: false,
                 interact_with_block: false,
+                java_pvp: true,
+                java_pvp_attack_players: true,
+                java_pvp_attack_entities: true
             },
             desc: 'hunger game',
             npcs: [
@@ -3098,9 +3319,9 @@ let hg = {
                         } else
                             e.sender.sendMessage(`\xa7cNo such command \xa7f\'!\xa7c${b.replace(hg.command_prefix, '')}\xa7f\'\xa7f!`); // send a message to the player that the command doesn't exist
                     } else {
-                        // 100 max characters
-                        if (e.message.length > 100) {
-                            e.sender.sendMessage(`\xa7cYou can\'t send a message that long\xa7f! \xa7f(\xa7c${e.message.length} \xa7f>\xa7c 100\xa7f)`)
+                        // 256 max characters
+                        if (e.message.length > 256) {
+                            e.sender.sendMessage(`\xa7cYou can\'t send a message that long\xa7f! \xa7f(\xa7c${e.message.length} \xa7f>\xa7c 256\xa7f)`)
                             return;
                         } 
                         // makes it so you can't use §k in chat
@@ -3109,7 +3330,7 @@ let hg = {
                             return;
                         }
 
-                        s.world.sendMessage(`\xa7i[${hg.methods.get_time()}] ${hg.methods.get_rank_text(e.sender)}${e.sender.getDynamicProperty('hgncb:display_name') ?? e.sender.name} \xa7i»\xa7r ${e.message}`.replaceAll('%', '%%')) // send the message globally
+                        s.world.sendMessage(`\xa7i[${hg.methods.get_time()}] ${hg.methods.get_rank_text(e.sender)}${e.sender.getDynamicProperty('hgncb:display_name') ?? e.sender.name} \xa7i»\xa7r ${hg.methods.censor(e.message)}`.replaceAll('%', '%%')) // send the message globally
                     }
                 } catch (err) {
                     s.world.sendMessage('\xa7bHyperGames \xa7i- \xa7cERROR \xa7i- \xa7r' + err)
@@ -3204,7 +3425,7 @@ let hg = {
                                                                 pitch : 1.0,
                                                                 volume: 1.0
                                                             }))
-                                                            player.setDynamicProperty('hgncb:timer.kitpvp.milk', 600)
+                                                            player.setDynamicProperty('hgncb:timer.kitpvp.milk', 400)
                                                             s.system.run(() => player.runCommand('effect @s clear slow_falling'))
                                                             s.system.run(() => player.runCommand('effect @s clear instant_damage'))
                                                             s.system.run(() => player.runCommand('effect @s clear poison'))
@@ -3224,7 +3445,7 @@ let hg = {
                                                                 pitch : 2.0,
                                                                 volume: 0.75
                                                             }))
-                                                            player.setDynamicProperty('hgncb:timer.kitpvp.sonic', 400)
+                                                            player.setDynamicProperty('hgncb:timer.kitpvp.sonic', 200)
                                                             let entities = player.getEntitiesFromViewDirection({
                                                                 ignoreBlockCollision: true,
                                                                 includeLiquidBlocks: false,
@@ -3348,6 +3569,10 @@ let hg = {
                         player.sendMessage(`\xa7bWelcome to \xa7lHyperGames NCB\xa7r! \xa7i- \xa7f(\xa7b${hg.ver}\xa7f)`);
                     let hub = hg.minigames.find(g => g.id === 'hub');
                     hub.on_enter(player); // teleport the player to the hub
+                    player.playSound('hgncb.join', {
+                        pitch: 1.0,
+                        volume: 1.0
+                    })
 
                     s.system.runTimeout(() => {
                         player.sendMessage('\xa7bType \xa7f!\xa7brules to show the rules of the server\xa7f!')
@@ -3357,7 +3582,7 @@ let hg = {
                         })
                     }, 60)
                     s.system.runTimeout(() => {
-                        player.sendMessage('\xa7lIMPORTANT!!! \xa7r- HyperGames phyiscally depends on it\'s resource packs. If you haven\'t already, download the resource packs.')
+                        player.sendMessage('\xa7bInfo \xa7i» \xa7fInvite your friends! We need more players!')
                         player.playSound('random.pop', {
                             pitch: 1.0,
                             volume: 1.0
@@ -3436,6 +3661,14 @@ let hg = {
 
                 if (!target   || !target.isValid  )
                     return;
+
+                let attacker_mainhand = attacker?.getComponent('minecraft:equippable')?.getEquipment('Mainhand')
+                if (attacker_mainhand && attacker_mainhand.typeId === 'minecraft:bread') {
+                    target.applyKnockback({
+                        x: (attacker?.getViewDirection()?.x ?? 0) * 3,
+                        z: (attacker?.getViewDirection()?.z ?? 0) * 3
+                    }, 0.6)
+                }
 
                 if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player' && target?.typeId === 'minecraft:player' && attacker.getGameMode() !== 'Creative' && target.getGameMode() !== 'Creative') {
                     attacker?.setDynamicProperty('hgncb:kitpvp.last_hit', s.system.currentTick)
@@ -3526,6 +3759,9 @@ let hg = {
                                     z: game.location.z
                                 })
                                 game.for_each_player(player)
+                                game.permissions.java_pvp                  ? player.addTag('njmp:player.enable_1.9_pvp')         : player.removeTag('njmp:player.enable_1.9_pvp');
+                                !game.permissions.java_pvp_attack_players  ? player.addTag('njmp:player.cannot_attack_players')  : player.removeTag('njmp:player.cannot_attack_players');
+                                !game.permissions.java_pvp_attack_entities ? player.addTag('njmp:player.cannot_attack_entities') : player.removeTag('njmp:player.cannot_attack_entities');
                             } else {
                                 player.removeTag(tag)
                             }
@@ -3536,7 +3772,10 @@ let hg = {
             for (let game of hg.minigames) {
                 game.on_tick();
                 for (let npc_data of game.npcs) {
-                    if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${npc_data.link ?? npc_data.id}`] }).length <= 0) {
+                    if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${npc_data.link ?? npc_data.id}`] }).length > 1) {
+                        let npc = hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${npc_data.link ?? npc_data.id}`] }).slice(1)[0]
+                        npc.remove();
+                    } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:npc.${npc_data.link ?? npc_data.id}`] }).length <= 0) {
                         let npc = hg.dimensions.overworld.spawnEntity('minecraft:npc', npc_data.location);
                         let npc_comp = npc.getComponent('minecraft:npc')
                         let player_count = hg.dimensions.overworld.getPlayers({
