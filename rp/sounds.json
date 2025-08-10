@@ -1,0 +1,343 @@
+{
+    "individual_event_sounds": {
+        "events": {
+            "item.shield.block": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "sound": "item.shield.block",
+                "volume": 1
+            },
+            "drop.slot": "",
+            "armor.equip_chain": "",
+            "armor.equip_diamond": "",
+            "armor.equip_elytra": "",
+            "armor.equip_generic": "",
+            "armor.equip_gold": "",
+            "armor.equip_iron": "",
+            "armor.equip_leather": "",
+            "armor.equip_netherite": "",
+            "bubble.down": {
+                "pitch": [
+                    0.9,
+                    1.05
+                ],
+                "sound": "block.bubble_column.whirlpool_ambient",
+                "volume": [
+                    0.4,
+                    0.6
+                ]
+            },
+            "bubble.downinside": {
+                "pitch": [
+                    0.9,
+                    1.05
+                ],
+                "sound": "block.bubble_column.whirlpool_inside",
+                "volume": [
+                    1,
+                    1.5
+                ]
+            },
+            "bubble.pop": {
+                "pitch": [
+                    0.9,
+                    1.05
+                ],
+                "sound": "block.bubble_column.bubble_pop",
+                "volume": [
+                    0.4,
+                    0.6
+                ]
+            },
+            "bubble.up": {
+                "pitch": [
+                    0.9,
+                    1.05
+                ],
+                "sound": "block.bubble_column.upwards_ambient",
+                "volume": [
+                    0.4,
+                    0.6
+                ]
+            },
+            "bubble.upinside": {
+                "pitch": [
+                    0.9,
+                    1.05
+                ],
+                "sound": "block.bubble_column.upwards_inside",
+                "volume": [
+                    1,
+                    1.5
+                ]
+            },
+            "splash": {
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "sound": "entity.generic.splash",
+                "volume": 0.25
+            }
+        }
+    },
+    "entity_sounds": {
+        "defaults": {
+            "events": {
+                "ambient": "",
+                "ambient.in.raid": "",
+                "ambient.in.water": "",
+                "celebrate": "",
+                "death": "entity.generic.death",
+                "death.in.water": "",
+                "drink": {
+                    "pitch": [
+                        0.9,
+                        1.1
+                    ],
+                    "sound": "entity.generic.drink",
+                    "volume": 0.35
+                },
+                "drink.honey": {
+                    "pitch": [
+                        0.9,
+                        1
+                    ],
+                    "sound": "random.drink_honey",
+                    "volume": 0.5
+                },
+                "eat": {
+                    "pitch": [
+                        0.8,
+                        1.2
+                    ],
+                    "sound": "entity.generic.eat",
+                    "volume": [
+                        0.5,
+                        1.1
+                    ]
+                },
+                "fall.big": {
+                    "pitch": 1,
+                    "sound": "entity.generic.big_fall",
+                    "volume": 0.75
+                },
+                "fall.small": {
+                    "pitch": 1,
+                    "sound": "entity.generic.small_fall",
+                    "volume": 0.75
+                },
+                "fizz": {
+                    "pitch": [
+                        1.2,
+                        2
+                    ],
+                    "sound": "random.fizz",
+                    "volume": 0.7
+                },
+                "flop": "",
+                "hurt": "entity.generic.hurt",
+                "hurt.in.water": "",
+                "splash": {
+                    "pitch": [
+                        0.8,
+                        1.2
+                    ],
+                    "sound": "entity.generic.splash"
+                },
+                "swim": {
+                    "pitch": [
+                        0.8,
+                        1.2
+                    ],
+                    "sound": "entity.generic.swim"
+                }
+            },
+            "pitch": [
+                0.8,
+                1.2
+            ],
+            "volume": 1
+        },
+        "entities": {
+            "boat": {
+                "events": {
+                    "death": "",
+                    "death.in.water": "",
+                    "hurt": "",
+                    "hurt.in.water": "",
+                    "splash": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.generic.splash"
+                    },
+                    "swim": "entity.boat.paddle_water",
+                    "step": "entity.boat.paddle_land"
+                },
+                "variants": {
+                    "key": null
+                }
+            },
+            "cod": {
+                "events": {
+                    "ambient": "entity.cod.ambient",
+                    "hurt": "entity.cod.hurt",
+                    "hurt.in.water": "entity.cod.hurt",
+                    "death": "entity.cod.death",
+                    "flop": {
+                        "pitch": 1,
+                        "sound": "entity.cod.flop",
+                        "volume": 1
+                    },
+                    "step": {
+                        "pitch": 1,
+                        "sound": "entity.generic.swim",
+                        "volume": 0.15
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "variants": {
+                    "key": null
+                },
+                "volume": 1
+            },
+            "fishing_hook": {
+                "events": {
+                    "splash": {
+                        "sound": "entity.fishing_bobber.splash"
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "variants": {
+                    "key": null
+                },
+                "volume": 0.25
+            },
+            "player": {
+                "events": {
+                    "attack.nodamage": "",
+                    "attack.strong": "",
+                    "death": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.death"
+                    },
+                    "death.in.water": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.death"
+                    },
+                    "elderguardian.curse": {
+                        "pitch": 1,
+                        "sound": "mob.elderguardian.curse",
+                        "volume": 1
+                    },
+                    "hurt": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.hurt"
+                    },
+                    "hurt.in.water": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.hurt"
+                    },
+                    "swim": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.swim"
+                    },
+                    "splash": {
+                        "pitch": [
+                            0.8,
+                            1.2
+                        ],
+                        "sound": "entity.player.splash"
+                    },
+                    "throw": {
+                        "pitch": 0.5,
+                        "sound": "random.bow",
+                        "volume": 0.5
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "volume": 1
+            },
+            "salmon": {
+                "events": {
+                    "ambient": "entity.salmon.ambient",
+                    "hurt": "entity.salmon.hurt",
+                    "hurt.in.water": "entity.salmon.hurt",
+                    "death": "entity.salmon.death",
+                    "flop": {
+                        "pitch": 1,
+                        "sound": "entity.tropical_fish.flop",
+                        "volume": 1
+                    },
+                    "step": {
+                        "pitch": 1,
+                        "sound": "entity.generic.swim",
+                        "volume": 0.15
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "variants": {
+                    "key": null
+                },
+                "volume": 1
+            },
+            "tropicalfish": {
+                "events": {
+                    "ambient": "entity.tropical_fish.ambient",
+                    "hurt": "entity.tropical_fish.hurt",
+                    "hurt.in.water": "entity.tropical_fish.hurt",
+                    "death": "entity.tropical_fish.death",
+                    "flop": {
+                        "pitch": 1,
+                        "sound": "entity.tropical_fish.flop",
+                        "volume": 1
+                    },
+                    "step": {
+                        "pitch": 1,
+                        "sound": "entity.generic.swim",
+                        "volume": 0.15
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.2
+                ],
+                "variants": {
+                    "key": null
+                },
+                "volume": 1
+            }
+        }
+    }
+}
