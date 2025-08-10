@@ -7,13 +7,18 @@
             "is_spawnable": false,
             "is_summonable": false,
             "properties": {
+                "hgncb:visual.hurt": {
+                    "type": "int",
+                    "client_sync": true,
+                    "default": 0,
+                    "range": [0, 10]
+                },
                 "njmp:player.attack_meter": {
                     "type": "float",
                     "client_sync": true,
                     "default": 0.0,
                     "range": [0.0, 1.0]
                 },
-
                 "njmp:player.looking_at_entity": {
                     "type": "bool",
                     "client_sync": true,
@@ -25,9 +30,10 @@
                     "default": false
                 },
                 "njmp:player.blocking": {
-                    "type": "bool",
+                    "type": "int",
                     "client_sync": true,
-                    "default": false
+                    "default": 0,
+                    "range": [0, 1]
                 }
             }
         },
@@ -66,6 +72,16 @@
                     }
                 }
             },
+            "hgncb:player.enable_kitpvp_bypass": {
+                "minecraft:attack": {
+                    "damage": -2147483648
+                }
+            },
+            "hgncb:player.disable_kitpvp_bypass": {
+                "minecraft:attack": {
+                    "damage": 1
+                }
+            },
             "njmp:player.1.9_pvp_enabled": {
                 "minecraft:attack": {
                     "damage": -2147483648
@@ -89,6 +105,14 @@
                                             {
                                                 "test": "has_tag",
                                                 "value": "hgncb:minigame.hub"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "all_of": [
+                                            {
+                                                "test": "has_tag",
+                                                "value": "hgncb:minigame.kitpvp"
                                             }
                                         ]
                                     },
@@ -327,6 +351,30 @@
                 "remove": {
                     "component_groups": [
                         "minecraft:raid_trigger"
+                    ]
+                }
+            },
+            "hgncb:enable_kitpvp_bypass": {
+                "add": {
+                    "component_groups": [
+                        "hgncb:player.enable_kitpvp_bypass"
+                    ]
+                },
+                "remove": {
+                    "component_groups": [
+                        "hgncb:player.disable_kitpvp_bypass"
+                    ]
+                }
+            },
+            "hgncb:disable_kitpvp_bypass": {
+                "remove": {
+                    "component_groups": [
+                        "hgncb:player.enable_kitpvp_bypass"
+                    ]
+                },
+                "add": {
+                    "component_groups": [
+                        "hgncb:player.disable_kitpvp_bypass"
                     ]
                 }
             },

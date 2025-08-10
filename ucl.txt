@@ -1,0 +1,14 @@
+v0.3.0 changelog:  
+    - replaced NCB custom commands with slash commands  
+    - added /usersettings command  
+    - renamed /clear_chat command to /clearchat  
+    KitPVP:  
+        - added a new damage & knockback system  
+        - added combat sounds (can be turned off with /usersettings)  
+        - boosts now persist after death  
+        - disabled campfire damage  
+        - fixed resistance boosts getting overriten by spawn invincibility  
+        - fixed gapples activating cooldown even when you don't fully eat them  
+        - lowered the gapple cooldown from 5s to 2.5s  
+        - removed shop invunerability  
+    - many more changes... i forgot alot of them  
