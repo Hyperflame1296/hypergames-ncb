@@ -1,6 +1,6 @@
 {
   "name": "hypergames-ncb",
-  "version": "0.2.2",
+  "version": "0.3.0-alpha.rev1",
   "description": "remaking hypergames",
   "homepage": "https://github.com/Hyperflame1296/hypergames-ncb#readme",
   "bugs": {
@@ -13,7 +13,6 @@
   "license": "ISC",
   "author": "TensiveYT",
   "type": "commonjs",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
