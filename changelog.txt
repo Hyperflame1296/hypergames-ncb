@@ -1,4 +1,4 @@
-v0.3.0 changelog:  
+v0.3.0.rev0 changelog:  
     - replaced NCB custom commands with slash commands  
     - added /usersettings command  
     - renamed /clear_chat command to /clearchat  
@@ -12,3 +12,6 @@ v0.3.0 changelog:
         - lowered the gapple cooldown from 5s to 2.5s  
         - removed shop invunerability  
     - many more changes... i forgot alot of them  
+
+v0.3.0.rev1 changelog:  
+    - added the world file & resource pack into the repository
