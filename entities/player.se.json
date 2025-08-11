@@ -72,16 +72,6 @@
                     }
                 }
             },
-            "hgncb:player.enable_kitpvp_bypass": {
-                "minecraft:attack": {
-                    "damage": -2147483648
-                }
-            },
-            "hgncb:player.disable_kitpvp_bypass": {
-                "minecraft:attack": {
-                    "damage": 1
-                }
-            },
             "njmp:player.1.9_pvp_enabled": {
                 "minecraft:attack": {
                     "damage": -2147483648
@@ -359,30 +349,6 @@
                 "remove": {
                     "component_groups": [
                         "minecraft:raid_trigger"
-                    ]
-                }
-            },
-            "hgncb:enable_kitpvp_bypass": {
-                "add": {
-                    "component_groups": [
-                        "hgncb:player.enable_kitpvp_bypass"
-                    ]
-                },
-                "remove": {
-                    "component_groups": [
-                        "hgncb:player.disable_kitpvp_bypass"
-                    ]
-                }
-            },
-            "hgncb:disable_kitpvp_bypass": {
-                "remove": {
-                    "component_groups": [
-                        "hgncb:player.enable_kitpvp_bypass"
-                    ]
-                },
-                "add": {
-                    "component_groups": [
-                        "hgncb:player.disable_kitpvp_bypass"
                     ]
                 }
             },

@@ -1,0 +1,28 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:npc_dialogue": {
+        "scenes": [
+            {
+                "scene_tag": "hgncb:dialogue.bridge_wars_enter",
+                "buttons": [
+                    {
+                        "name": "Yes",
+                        "commands": [
+                            "tag @initiator add hgncb:transfer.bridge_wars"
+                        ]
+                    },
+                    {
+                        "name": "No"
+                    }
+                ],
+                "text": {
+                    "rawtext": [
+                        {
+                            "text": "Are you sure you want to go to §uBridge Wars§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

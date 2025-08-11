@@ -7,11 +7,11 @@ import * as cui from './modules/chest_ui/forms.js';
 import      b64 from './b64.js'
 
 /*
-    hypergames ncb v0.2.2
+    hypergames ncb v0.3.2-alpha.rev0
     probably not gonna be finished for a while
 */
 let hg = {
-    ver: 'v0.2.2',
+    ver: 'v0.3.2-alpha.rev0',
     rules: [
         '    #\xa7b1 \xa7f- \xa7bNo spamming\xa7f.',
         '    #\xa7b2 \xa7f- \xa7bNo ragebaiting\xa7f.',
@@ -473,12 +473,13 @@ let hg = {
                 let attacker_health = attacker?.getComponent('minecraft:health')
                 let target_health   = target.getComponent  ('minecraft:health')
 
-                let attacker_knockback_horizontal = 0.7
-                let attacker_knockback_vertical = 0.2
+                let attacker_knockback_horizontal = 0.8
+                let attacker_knockback_vertical = 0.4
                 let target_knockback_horizontal = 0.8 * (attacker?.isSprinting ? 1.25 : 1)
                 let target_knockback_vertical = 0.4 * (attacker?.isSprinting ? 1.25 : 1)
                 if (
                     damage.cause !== 'maceSmash' && 
+                    damage.cause !== 'sonicBoom' && 
                     target.isSneaking && 
                     target_equipment.offhand?.typeId === 'minecraft:shield' && 
                     (target.getDynamicProperty('hgncb:timer.kitpvp.shield_cd') ?? 0) <= 0 &&
@@ -502,26 +503,16 @@ let hg = {
                         target.setDynamicProperty('hgncb:timer.kitpvp.shield_disable', 100)
                     }
                     return;
-                } else if (damage.cause === 'entityAttack') {
-                    if (damage.target <= 0) {
-                        if (attacker) this.play_sound_condition('entity.player.attack.nodamage', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
-                    } else {
-                        if (attacker?.isFalling) {
-                            if (attacker) this.play_sound_condition('entity.player.attack.crit', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
-                            target.dimension.spawnParticle('minecraft:critical_hit_emitter', {
-                                x: target.location.x,
-                                y: Math.min(((target.location.y + target.getHeadLocation().y) / 2) + 1, 320),
-                                z: target.location.z,
-                            })
-                        } else if (attacker?.isSprinting)
-                            if (attacker) this.play_sound_condition('entity.player.attack.knockback', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
-                        else
-                            if (attacker) this.play_sound_condition('entity.player.attack.strong', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
-                    }
                 } else if (damage.cause === 'maceSmash') {
                     if (damage.target <= 0) {
                         if (attacker) this.play_sound_condition('entity.player.attack.nodamage', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
                     } else {
+                        if (attacker?.isSprinting)
+                            if (attacker) 
+                                this.play_sound_condition('entity.player.attack.knockback', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
+                        else
+                            if (attacker) 
+                                this.play_sound_condition('entity.player.attack.strong', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
                         if (damage.hit_height <= 5 && !target.isOnGround)
                             attacker?.dimension.playSound('mace.smash_air', attacker?.location)
                         if (damage.hit_height <= 5 && target.isOnGround)
@@ -541,10 +532,26 @@ let hg = {
                                     continue;
 
                                 entity.applyKnockback({
-                                    x: Math.cos(hg.methods.get_knockback_direction(entity.location, attacker.location)) * 0.8,
-                                    z: Math.sin(hg.methods.get_knockback_direction(entity.location, attacker.location)) * 0.8
-                                }, 0.4)
+                                    x: Math.cos(hg.methods.get_knockback_direction(entity.location, attacker.location)) * attacker_knockback_horizontal,
+                                    z: Math.sin(hg.methods.get_knockback_direction(entity.location, attacker.location)) * attacker_knockback_horizontal
+                                }, attacker_knockback_vertical)
                             }
+                    }
+                } else if (damage.cause === 'entityAttack') {
+                    if (damage.target <= 0) {
+                        if (attacker) this.play_sound_condition('entity.player.attack.nodamage', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
+                    } else {
+                        if (attacker?.isFalling) {
+                            if (attacker) this.play_sound_condition('entity.player.attack.crit', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
+                            target.dimension.spawnParticle('minecraft:critical_hit_emitter', {
+                                x: target.location.x,
+                                y: Math.min(((target.location.y + target.getHeadLocation().y) / 2) + 1, 320),
+                                z: target.location.z,
+                            })
+                        } else if (attacker?.isSprinting)
+                            if (attacker) this.play_sound_condition('entity.player.attack.knockback', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
+                        else
+                            if (attacker) this.play_sound_condition('entity.player.attack.strong', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
                     }
                 }
                 if (attacker)
@@ -565,7 +572,7 @@ let hg = {
                         attacker.runCommand('clear')
                         attacker.runCommand('effect @s clear')
                     } else {
-                        damage.attacker > 0 ? attacker_health.setCurrentValue(Math.max(target_health.currentValue - damage.attacker, 0)) : void 0;
+                        damage.attacker > 0 ? attacker_health.setCurrentValue(Math.max(attacker_health.currentValue - damage.attacker, 0)) : void 0;
                         damage.attacker > 0 ? attacker.dimension.playSound(hg.methods.get_hurt_sound(damage.cause), attacker.location, {
                             volume: 1,
                             pitch: hg.methods.random2(0.8, 1.2)
@@ -880,7 +887,8 @@ let hg = {
                 interact_with_block: false,
                 java_pvp: true,
                 java_pvp_attack_players: false,
-                java_pvp_attack_entities: false
+                java_pvp_attack_entities: false,
+                java_pvp_nullify_damage: false
             },
             desc: 'hypergames hub',
             npcs: [
@@ -963,6 +971,9 @@ let hg = {
                     player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
                     player.runCommand('effect @s clear')
                     player.addTag(`hgncb:minigame.${this.id}`);
+                    if (player.dimension.getPlayers({ tags: [`hgncb:minigame.${this.id}`] }).length === 0) {
+                        this.methods.reset()
+                    }
                     player.addTag(`hgncb:random_events.dead`);
 
                     player.inputPermissions.setPermissionCategory(1, true)
@@ -979,7 +990,7 @@ let hg = {
                     player.setGameMode('Survival')
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
-                player.triggerEvent('hgncb:disable_kitpvp_bypass')
+                
                 player.onScreenDisplay.setActionBar([
                     `\xa7bWelcome to HyperGames!\n`,
                     `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
@@ -997,7 +1008,8 @@ let hg = {
                 interact_with_block: false,
                 java_pvp: false,
                 java_pvp_attack_players: true,
-                java_pvp_attack_entities: true
+                java_pvp_attack_entities: true,
+                java_pvp_nullify_damage: true
             },
             desc: 'PVP - but revamped with new kits!',
             npcs: [
@@ -1013,7 +1025,7 @@ let hg = {
                             {
                                 text: 'Strength 1 (60s)',
                                 id: 'strength_1',
-                                cost: 2500,
+                                cost: 10000,
                                 condition: player => true,
                                 on_buy: player => {
                                     player.setDynamicProperty('hgncb:timer.kitpvp.strength_0', 1200)
@@ -1023,7 +1035,7 @@ let hg = {
                             {
                                 text: 'Strength 2 (60s)',
                                 id: 'strength_2',
-                                cost: 5000,
+                                cost: 20000,
                                 condition: player => true,
                                 on_buy: player => {
                                     player.setDynamicProperty('hgncb:timer.kitpvp.strength_1', 1200)
@@ -1033,7 +1045,7 @@ let hg = {
                             {
                                 text: 'Strength 3 (60s)',
                                 id: 'strength_3',
-                                cost: 10000,
+                                cost: 40000,
                                 condition: player => true,
                                 on_buy: player => {
                                     player.setDynamicProperty('hgncb:timer.kitpvp.strength_2', 1200)
@@ -1937,9 +1949,9 @@ let hg = {
                     {
                         text: '\xa7b\xa7lWizard\xa7r',
                         id: 'wizard',
-                        icon: 'minecraft:trident',
+                        icon: 'minecraft:sparkler',
                         desc: [
-                            '\xa73With this kit, you get a wand \xa78(the trident)\xa73 that can shoot beams.',
+                            '\xa73With this kit, you get a wand \xa78(the sparkler)\xa73 that can shoot beams.',
                             '\xa73These beams are 30 blocks long, and do 8 damage.'
                         ],
                         ench: false,
@@ -1955,7 +1967,7 @@ let hg = {
                                 ]
                             },
                             {
-                                name: 'minecraft:trident',
+                                name: 'minecraft:sparkler',
                                 slot: 1,
                                 enchantments: [],
                                 name_tag: '\xa7r\xa7dWand'
@@ -1989,7 +2001,7 @@ let hg = {
                                 slot: 'Head',
                                 enchantments: [
                                     {
-                                        level: 1,
+                                        level: 2,
                                         type: 'protection'
                                     }
                                 ]
@@ -1999,7 +2011,7 @@ let hg = {
                                 slot: 'Chest',
                                 enchantments: [
                                     {
-                                        level: 1,
+                                        level: 2,
                                         type: 'protection'
                                     }
                                 ]
@@ -2009,7 +2021,7 @@ let hg = {
                                 slot: 'Legs',
                                 enchantments: [
                                     {
-                                        level: 1,
+                                        level: 2,
                                         type: 'protection'
                                     }
                                 ]
@@ -2019,7 +2031,7 @@ let hg = {
                                 slot: 'Feet',
                                 enchantments: [
                                     {
-                                        level: 1,
+                                        level: 2,
                                         type: 'protection'
                                     }
                                 ]
@@ -2245,6 +2257,35 @@ let hg = {
             },
             methods: {
                 // #region kitpvp_kill_trade
+                earn_xp: function(player, amount) {
+                    let old_xp     = player.getDynamicProperty('hgncb:kitpvp.xp' ) ?? 0
+                    let old_lvl    = player.getDynamicProperty('hgncb:kitpvp.lvl') ?? 0
+                    let lvl_thresh = 500 + old_lvl * 100;
+
+                    let new_xp  = old_xp + amount;
+                    let new_lvl = old_lvl;
+                    while (new_xp > lvl_thresh) {
+                        new_lvl += 1;
+                        new_xp -= lvl_thresh;
+                        lvl_thresh = 500 + new_lvl * 100;
+                    }
+                    if (new_lvl > old_lvl) {
+                        player.playSound('random.levelup', {
+                            pitch: 1.0,
+                            volume: 1.0
+                        })
+                        player.onScreenDisplay.setTitle('\xa7aYou have leveled up!')
+                        player.onScreenDisplay.updateSubtitle(`\xa7b${old_lvl} \xa7f-> ${new_lvl}`)
+                    }
+                    player.setDynamicProperty('hgncb:kitpvp.xp' , new_xp )
+                    player.setDynamicProperty('hgncb:kitpvp.lvl', new_lvl)
+                },
+                visual_bar: function(value, size) {
+                    let a = '\xa7a' + '|'.repeat(Math.floor(value * size))
+                    let b = '\xa7i' + '|'.repeat(size - Math.floor(value * size))
+
+                    return a + b + '\xa7r';
+                },
                 kill_trade: function(attacker, target, method='contact') {
                     try {
                         if (attacker && attacker.id !== target.id) {
@@ -2260,7 +2301,7 @@ let hg = {
                                 let target_health = target.getComponent('minecraft:health')
                                 
                                 let coins_earned = 20 + Math.round(Math.random() * 15) + (target.hasTag('hgncb:kitpvp.event_target') ? 50 : 0)
-                                let xp_earned = 5 + Math.round(Math.random() * 5) + (target.hasTag('hgncb:kitpvp.event_target') ? 20 : 0)
+                                let xp_earned = 10 + Math.round(Math.random() * 10) + (target.hasTag('hgncb:kitpvp.event_target') ? 20 : 0)
                                 let effect = s.world.getDynamicProperty('hgncb:kitpvp.global.event_effect') ?? (Math.random() < 0.5 ? 'resistance' : 'strength')
                                 if (target.hasTag('hgncb:kitpvp.event_target')) {
                                     attacker.addEffect(effect, 1200, {
@@ -2287,8 +2328,6 @@ let hg = {
                                 }
 
                                 s.system.run(() => attacker.extinguishFire());
-
-
                                 target.setDynamicProperty('hgncb:timer.kitpvp.gapple', 0)
                                 target.setDynamicProperty('hgncb:timer.kitpvp.pot', 0)
                                 target.setDynamicProperty('hgncb:timer.kitpvp.sonic', 0)
@@ -2306,9 +2345,9 @@ let hg = {
                                 attacker?.isValid ? attacker.setDynamicProperty('hgncb:kitpvp.kills', attacker_kills + 1) : void 0
                                 attacker?.isValid ? attacker.setDynamicProperty('hgncb:kitpvp.coins', attacker_coins + coins_earned + (ms ? 500 : 0)) : void 0
                                 target.setDynamicProperty('hgncb:kitpvp.coins', target_coins + 2)
-                                attacker?.isValid ? attacker.setDynamicProperty('hgncb:kitpvp.xp', attacker_xp + xp_earned) : void 0
-                                attacker?.isValid ? attacker.sendMessage(`\xa7a^_^ \xa7i» \xa7iYou have won \xa7b${coins_earned}\xa7i gold and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target.name}\xa7i!`) : void 0
-                                attacker ? target.sendMessage(`\xa7i[\xa7eX_X\xa7i] \xa7iYou have been slain by \xa7f${attacker.name ?? attacker.nameTag ?? `%${attacker.localizationKey}`}\xa7i. You get \xa7b${2}\xa7i gold.`) : void 0;
+                                attacker?.isValid ? this.earn_xp(attacker, xp_earned) : void 0
+                                attacker?.isValid ? attacker.sendMessage(`\xa7a^_^ \xa7i» \xa7iYou have won \xa7b${coins_earned}\xa7i coins and \xa7a${xp_earned}\xa7i XP for killing \xa7f${target.name}\xa7i!`) : void 0
+                                attacker ? target.sendMessage(`\xa7eX_X \xa7i» \xa7iYou have been slain by \xa7f${attacker.name ?? attacker.nameTag ?? `%${attacker.localizationKey}`}\xa7i. You get \xa7b${2}\xa7i gold.`) : void 0;
                                 target.setDynamicProperty('hgncb:kitpvp.deaths', target_deaths + 1)
                                 s.system.run(() => attacker?.isValid ? attacker_health?.resetToMaxValue() : void 0)
                                 s.system.run(() => {
@@ -2363,9 +2402,16 @@ let hg = {
 
                         let coins = player.getDynamicProperty('hgncb:kitpvp.coins') ?? 0
                         let xp = player.getDynamicProperty('hgncb:kitpvp.xp') ?? 0
+                        let lvl = player.getDynamicProperty('hgncb:kitpvp.lvl') ?? 0
+                        let lvl_thresh = 500 + lvl * 100;
                         let sections = kitpvp.properties.shop
                         shop_form_sel.title(`Shop`)
-                            .body(`\xa7i---\xa7bSHOP\xa7i---\n\xa7fYou currently have \xa7b${coins}\xa7f gold.\nYou also have \xa7a${xp}\xa7f XP.`)
+                            .body([
+                                `\xa7i---\xa7bSHOP\xa7i---`,
+                                `\xa7eCoins\xa7i: \xa7e${coins}\xa7f`,
+                                `\xa7aXP\xa7i: \xa7i[\xa7a${xp} \xa7i/ \xa7a${lvl_thresh}\xa7i] \xa7i[${this.visual_bar(xp / lvl_thresh, 30)}\xa7i]`,
+                                `\xa7fLvl\xa7i. \xa7b${lvl}\xa7f\xa7.\xa7f`
+                            ].join('\n'))
                         shop_form_sel.label(`\xa7f\xa7bCategories\xa7f:`)
                         
                         for (let section of sections) {
@@ -2679,7 +2725,7 @@ let hg = {
                     else
                         return '\xa7c'
                 })();
-                player.triggerEvent('hgncb:enable_kitpvp_bypass')
+                
                 let nametag_func = (() => {
                     if (player.getGameMode() === 'Creative') 
                         return '\xa7i\xa7oIn creative mode...'
@@ -2737,12 +2783,6 @@ let hg = {
                         amplifier: 2,
                         showParticles: true
                     })
-                if (mainhand && mainhand.typeId === 'minecraft:trident') {
-                    player.addEffect('weakness', 5, {
-                        amplifier: 255,
-                        showParticles: false
-                    })
-                }
                 if (player.getDynamicProperty('hgncb:kitpvp.is_selecting_kit')) {
                     player.addEffect('instant_health', 60, {
                         amplifier: 255,
@@ -2873,7 +2913,8 @@ let hg = {
                 interact_with_block: true,
                 java_pvp: true,
                 java_pvp_attack_players: false,
-                java_pvp_attack_entities: true
+                java_pvp_attack_entities: true,
+                java_pvp_nullify_damage: false
             },
             desc: 'Random events happen every 10 seconds. Your goal is to be the last one standing.',
             npcs: [
@@ -3281,15 +3322,17 @@ let hg = {
                     player.addTag(`hgncb:minigame.${this.id}`);
 
                     if (player.dimension.getPlayers({ tags: [`hgncb:minigame.${this.id}`] }).length === 2) {
-                        player.sendMessage(`\xa7eGame \xa7i» \xa7fA player has joined! Resetting the map...`)
-                        player.playSound('random.orb', {
-                            pitch : 2.0,
-                            volume: 1.0
-                        })
-                        s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
-                        s.system.runTimeout(() => {
-                            this.methods.reset()
-                        }, 80)
+                        for (let player of player.dimension.getPlayers({ tags: [`hgncb:minigame.${this.id}`] })) {
+                            player.sendMessage(`\xa7eGame \xa7i» \xa7fA player has joined! Resetting the map...`)
+                            player.playSound('random.orb', {
+                                pitch : 2.0,
+                                volume: 1.0
+                            })
+                            s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
+                            s.system.runTimeout(() => {
+                                this.methods.reset()
+                            }, 80)
+                        }
                     }
                 } catch (err) {
                     s.world.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`)
@@ -3520,7 +3563,7 @@ let hg = {
                 let players_remaining       = players_alive.length;
                 let game_can_continue       = players.length > 1;
                 let is_dead = player.hasTag('hgncb:random_events.dead')
-                player.triggerEvent('hgncb:disable_kitpvp_bypass')
+                
                 let wins  = player.getDynamicProperty('hgncb:random_events.wins') ?? 0
                 let losses = player.getDynamicProperty('hgncb:random_events.losses') ?? 0
 
@@ -3661,7 +3704,8 @@ let hg = {
                 interact_with_block: false,
                 java_pvp: true,
                 java_pvp_attack_players: true,
-                java_pvp_attack_entities: true
+                java_pvp_attack_entities: true,
+                java_pvp_nullify_damage: false
             },
             desc: 'Duels! Fight to the death.',
             npcs: [
@@ -3756,7 +3800,8 @@ let hg = {
                 interact_with_block: false,
                 java_pvp: true,
                 java_pvp_attack_players: true,
-                java_pvp_attack_entities: true
+                java_pvp_attack_entities: true,
+                java_pvp_nullify_damage: false
             },
             desc: 'hunger game',
             npcs: [
@@ -3820,7 +3865,7 @@ let hg = {
                     player.setGameMode('Survival')
                 player.nameTag = hg.methods.get_rank_text(player) + player.name
                 player.runCommand('clear @s[m=!c]')
-                player.triggerEvent('hgncb:disable_kitpvp_bypass')
+                
                 player.onScreenDisplay.setActionBar([
                     `\xa7bWelcome to HyperGames!\n`,
                     `\xa7bDiscord\xa7f: \xa7ohttps://discord.gg/R5z3R3wd9h\xa7r\n`,
@@ -3971,7 +4016,7 @@ let hg = {
                                                     })
                                                 })
                                                 break;
-                                            case 'minecraft:trident':
+                                            case 'minecraft:sparkler':
                                                 let sonic_timer = player.getDynamicProperty('hgncb:timer.kitpvp.sonic') ?? 0
                                                 e.cancel = true;
                                                 if (sonic_timer > 0) {
@@ -3985,7 +4030,7 @@ let hg = {
                                                         pitch : 2.0,
                                                         volume: 0.75
                                                     }))
-                                                    player.setDynamicProperty('hgncb:timer.kitpvp.sonic', 200)
+                                                    player.setDynamicProperty('hgncb:timer.kitpvp.sonic', 100)
                                                     let entities = player.getEntitiesFromViewDirection({
                                                         ignoreBlockCollision: true,
                                                         includeLiquidBlocks: false,
@@ -3994,12 +4039,17 @@ let hg = {
                                                     })
                                                     for (let entity of entities) {
                                                         if (entity.entity.typeId === 'minecraft:player') {
-                                                            hg.methods.apply_custom_damage(8, {
-                                                                attacker: player,
-                                                                target: entity.entity,
-                                                                cause: 'sonicBoom',
-                                                                knockback_direction: player.getViewDirection()
-                                                            })
+                                                            s.system.run(() => hg.methods.apply_custom_damage(5, {
+                                                                    attacker: player,
+                                                                    target: entity.entity,
+                                                                    cause: 'sonicBoom',
+                                                                    knockback_direction: {
+                                                                        x: player.getViewDirection().x * 5,
+                                                                        y: player.getViewDirection().y,
+                                                                        z: player.getViewDirection().z * 5
+                                                                    }
+                                                                })
+                                                            )
                                                         }
                                                     }
                                                     for (let i = 0; i < 30; i++) {
@@ -4495,7 +4545,15 @@ let hg = {
                                     break;
                             }
                         }
-                    }
+                    },
+                    {
+                        name: 'restart',
+                        desc: 'Restarts the server.',
+                        func: function(a, player) {
+                            player.runCommand('kick @a \nThe server is restarting.\nYou can now join back.')
+                            player.runCommand('reload all')
+                        }
+                    },
                     // #endregion commands
                 ]
                 e.customCommandRegistry.registerEnum('hgncb:setting_type',  ['enableKitPvpSounds'])
@@ -4507,7 +4565,9 @@ let hg = {
                     'duels', 
                     'parkour', 
                     'skygen', 
-                    'bedwars'
+                    'bedwars',
+                    'draw',
+                    'bridge_wars'
                 ])
                 e.customCommandRegistry.registerCommand(
                     {
@@ -4590,6 +4650,17 @@ let hg = {
                 )
                 e.customCommandRegistry.registerCommand(
                     {
+                        name: 'hgncb:restart',
+                        cheatsRequired: false,
+                        permissionLevel: 4,
+                        description: commands.find(c => c.name === 'restart').desc
+                    },
+                    function(origin, ...a) {
+                        s.system.run(() => commands.find(c => c.name === 'restart').func([undefined, ...a], origin.sourceEntity))
+                    }
+                )
+                e.customCommandRegistry.registerCommand(
+                    {
                         name: 'hgncb:clearchat',
                         cheatsRequired: false,
                         permissionLevel: 1,
@@ -4658,6 +4729,7 @@ let hg = {
                         let onfire = player.getComponent('minecraft:onfire')
                         let breathable = player.getComponent('minecraft:breathable')
                         let poison = player.getEffect('poison')
+                        let instant_damage = player.getEffect('instant_damage')
                         if (poison) {
                             poison.duration % 20 === 0 ?
                                 hg.methods.apply_custom_damage(1, {
@@ -4667,6 +4739,13 @@ let hg = {
                                 })
                             :
                                 void 0;
+                        }
+                        if (instant_damage) {
+                            hg.methods.apply_custom_damage(3 * 2 ** instant_damage.amplifier, {
+                                attacker: undefined,
+                                target: player,
+                                cause: 'magic'
+                            })
                         }
                         if (breathable) {
                             if (breathable.airSupply <= 0) {
@@ -4731,11 +4810,10 @@ let hg = {
                             z: game.location.z
                         })
                         game.for_each_player(player)
-                        game.permissions.java_pvp                  ? player.addTag('njmp:player.enable_1.9_pvp')         : player.removeTag('njmp:player.enable_1.9_pvp');
+                         game.permissions.java_pvp_nullify_damage  ? player.addTag('njmp:player.nullify_damage')         : player.removeTag('njmp:player.nullify_damage');
+                         game.permissions.java_pvp                 ? player.addTag('njmp:player.enable_1.9_pvp')         : player.removeTag('njmp:player.enable_1.9_pvp');
                         !game.permissions.java_pvp_attack_players  ? player.addTag('njmp:player.cannot_attack_players')  : player.removeTag('njmp:player.cannot_attack_players');
                         !game.permissions.java_pvp_attack_entities ? player.addTag('njmp:player.cannot_attack_entities') : player.removeTag('njmp:player.cannot_attack_entities');
-                    } else {
-                        player.removeTag(game.name)
                     }
                     for (let tag of tags) {
                         if (tag.startsWith('hgncb:transfer.')) {
@@ -4825,13 +4903,14 @@ let hg = {
         // runs when the script is loaded
         s.world.sendMessage(`\xa7fScript reloaded\xa7i! (HyperGames)`);
         for (let player of hg.dimensions.overworld.getPlayers()) {
+            ui.uiManager.closeAllForms(player)
             let game = hg.methods.get_minigame(player)
             if (game) {
                 if (game.id === 'kitpvp') {
                     let last_kit = game.properties.kits.find(k => k.id === player.getDynamicProperty('hgncb:kitpvp.last_kit') ?? 'basic')
                     if (player.getDynamicProperty('hgncb:kitpvp.is_selecting_kit')) {
-                        ui.uiManager.closeAllForms(player)
                         player.setDynamicProperty('hgncb:kitpvp.selected_kit', last_kit.id)
+                        player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
                         player.sendMessage(`\xa7bInfo \xa7i» \xa7rThe host has reloaded, so you have been given the last kit you selected. \xa7i(${last_kit.text}\xa7i)`)
                     }
                 }

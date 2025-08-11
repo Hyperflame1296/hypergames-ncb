@@ -34,3 +34,25 @@
 - fixed a bug where falling on hay still deals the full fall damage
 - added an Exit button to the leaderboard
 - fixed reloading in KitPVP by making it select the last kit for each player in the kit select menu
+### Random Events
+- fixed a bug where random events would mess up if there was only one player, and someone joined
+# v0.3.2-alpha.rev0 changelog: 
+# Changelog
+### Global
+- fixed an error that occured when a player joined the world
+### KitPVP
+- added a leveling system!  
+    this uses the XP you get from kills to level you up!  
+    this doesn't make you stronger in any way, it just gives a reason to grind  
+    the XP threshhold starts at 500, and increases by 100 each level  
+
+- fixed an issue with Thorns
+- increased Thorns knockback
+- fixed wizard wand not working
+- changed wizard wand cooldown to 5 seconds
+- added more knockback to the wizard wand
+- fixed reloading still causing issues
+- changed the shop menu a little
+### Random Events
+- fixed a bug where the message that says a player has joined won't show up
+- made the map reset when everyone leaves
