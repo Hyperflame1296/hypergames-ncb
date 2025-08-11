@@ -1,0 +1,29 @@
+{
+    "format_version": "1.21.0",
+    "minecraft:client_entity": {
+        "description": {
+            "identifier": "hgncb:title",
+            "materials": {
+                "default": "entity_alphatest"
+            },
+            "textures": {
+                "default": "textures/hgncb/title"
+            },
+            "geometry": {
+                "default": "geometry.hgncb.title"
+            },
+            "scripts": {
+                "animate": [
+                    "float"
+                ]
+            },
+            "animations": {
+                "float": "animation.hgncb.title.float"
+            },
+            "render_controllers": [
+                "controller.render.hgncb.title"
+            ],
+            "enable_attachables": false
+        }
+    }
+}

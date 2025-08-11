@@ -1,0 +1,28 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:npc_dialogue": {
+        "scenes": [
+            {
+                "scene_tag": "hgncb:dialogue.hunger_games_enter",
+                "buttons": [
+                    {
+                        "name": "Yes",
+                        "commands": [
+                            "tag @initiator add hgncb:transfer.hunger_games"
+                        ]
+                    },
+                    {
+                        "name": "No"
+                    }
+                ],
+                "text": {
+                    "rawtext": [
+                        {
+                            "text": "Are you sure you want to go to §uHunger Games§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

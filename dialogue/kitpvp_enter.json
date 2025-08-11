@@ -1,0 +1,28 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:npc_dialogue": {
+        "scenes": [
+            {
+                "scene_tag": "hgncb:dialogue.kitpvp_enter",
+                "buttons": [
+                    {
+                        "name": "Yes",
+                        "commands": [
+                            "tag @initiator add hgncb:transfer.kitpvp"
+                        ]
+                    },
+                    {
+                        "name": "No"
+                    }
+                ],
+                "text": {
+                    "rawtext": [
+                        {
+                            "text": "Are you sure you want to go to §uKitPVP§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

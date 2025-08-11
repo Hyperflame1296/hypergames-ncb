@@ -1,18 +1,18 @@
 {
     "format_version": 2,
     "header": {
-        "name": "§i[§fRP§i] §bHyperGames §i- §fv0.3.0",
+        "name": "§i[§fRP§i] §bHyperGames §i- §fv0.3.1-alpha.rev0",
         "description": "tensive decided to redo the entirety of hypergames. again.",
         "uuid": "2210b699-e1ad-4661-ba07-f4e8ad236aaa",
-        "version": [ 0, 3, 0 ],
+        "version": [ 0, 3, 1 ],
         "min_engine_version": [ 1, 21, 100 ]
     },
     "modules": [
         {
-            "description": "rp0.3.0",
+            "description": "rp0.3.1-alpha.rev0",
             "type": "resources",
             "uuid": "03a4b70e-b2e7-4914-98ec-a69c98145e05",
-            "version": [ 0, 3, 0 ]
+            "version": [ 0, 3, 1 ]
         }
     ],
     "metadata": {

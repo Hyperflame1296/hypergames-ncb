@@ -1,0 +1,23 @@
+{
+    "format_version": "1.8.0",
+    "animations": {
+        "animation.hgncb.title.float": {
+            "loop": true,
+            "bones": {
+                "hypergames": {
+                    "position": [
+                        0,
+                        "math.sin(q.life_time * 48) * 4",
+                        0
+                    ],
+                    "rotation": [
+                        0,
+                        0,
+                        0
+                    ],
+                    "scale": 0.25
+                }
+            }
+        }
+    }
+}

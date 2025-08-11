@@ -1,4 +1,4 @@
-v0.3.0.rev0 changelog:  
+# v0.3.0-alpha.rev0 changelog:  
 # Changelog
 ### Global
 - replaced NCB custom commands with slash commands  
@@ -15,7 +15,22 @@ v0.3.0.rev0 changelog:
 - removed shop invunerability  
 - many more changes... i forgot alot of them  
 
-v0.3.0.rev1 changelog: 
+# v0.3.0-alpha.rev1 changelog: 
 # Changelog
 ### Global
 - added the world file & resource pack into the repository
+
+# v0.3.1-alpha.rev0 changelog: 
+# Changelog
+### Global
+- cleaned up some repetitive code
+- made npcs have their own dialogues instead of having to manually set them
+- added /server command, to go to different servers without using the npcs
+### Hub
+- added a title!
+### KitPVP
+- fixed a bug where you could block maces
+- fixed a bug where falling on a ladder causes fall damage
+- fixed a bug where falling on hay still deals the full fall damage
+- added an Exit button to the leaderboard
+- fixed reloading in KitPVP by making it select the last kit for each player in the kit select menu

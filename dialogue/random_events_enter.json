@@ -1,0 +1,28 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:npc_dialogue": {
+        "scenes": [
+            {
+                "scene_tag": "hgncb:dialogue.random_events_enter",
+                "buttons": [
+                    {
+                        "name": "Yes",
+                        "commands": [
+                            "tag @initiator add hgncb:transfer.random_events"
+                        ]
+                    },
+                    {
+                        "name": "No"
+                    }
+                ],
+                "text": {
+                    "rawtext": [
+                        {
+                            "text": "Are you sure you want to go to §uRandom Events§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

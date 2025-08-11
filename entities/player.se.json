@@ -120,6 +120,14 @@
                                         "all_of": [
                                             {
                                                 "test": "has_tag",
+                                                "value": "hgncb:minigame.bedwars"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "all_of": [
+                                            {
+                                                "test": "has_tag",
                                                 "value": "hgncb:minigame.random_events"
                                             },
                                             {

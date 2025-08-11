@@ -2,7 +2,7 @@
     "format_version": "1.21.0",
     "minecraft:entity": {
         "description": {
-            "identifier": "hgncb:sample_entity",
+            "identifier": "hgncb:bossbar_entity",
             "is_spawnable": false,
             "is_summonable": true,
             "is_experimental": false
@@ -27,6 +27,11 @@
             "minecraft:health": {
                 "value": 16777216,
                 "max": 16777216
+            },
+            "minecraft:boss": {
+                "hud_range": 1,
+                "name": "bossbar_entity",
+                "should_darken_sky": false
             },
             "minecraft:physics": {
                 "has_collision": false,
