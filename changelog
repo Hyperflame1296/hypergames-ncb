@@ -44,7 +44,7 @@
 - added a leveling system!  
     this uses the XP you get from kills to level you up!  
     this doesn't make you stronger in any way, it just gives a reason to grind  
-    the XP threshhold starts at 500, and increases by 100 each level  
+    the XP threshold starts at 500, and increases by 100 each level  
 
 - fixed an issue with Thorns
 - increased Thorns knockback
