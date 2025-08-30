@@ -1,24 +1,24 @@
 {
     "format_version": 2,
     "header": {
-        "name": "§i[§fBP§i] §bHyperGames NCB §i- §fv0.3.2-alpha.rev0",
+        "name": "§i[§fBP§i] §bHyperGames NCB §i- §fv0.3.3-alpha.rev0",
         "description": "tensive decided to redo the entirety of hypergames. again.",
         "uuid": "f791dd4f-f7e4-4bf3-b40d-67f977bc5b9f",
-        "version": [ 0, 3, 2 ],
+        "version": [ 0, 3, 3 ],
         "min_engine_version": [ 1, 21, 100 ]
     },
     "modules": [
         {
-            "description": "bp0.3.2-alpha.rev0",
+            "description": "bp0.3.3-alpha.rev0",
             "type": "data",
             "uuid": "741ef8fd-ceee-4725-b55f-23ab81fd5f49",
-            "version": [ 0, 3, 2 ]
+            "version": [ 0, 3, 3 ]
         },
         {
-            "description": "bp0.3.2-alpha.rev0",
+            "description": "bp0.3.3-alpha.rev0",
             "type": "script",
             "uuid": "07f0eb75-52ac-449b-bb16-a1ec94fdf8ff",
-            "version": [ 0, 3, 2 ],
+            "version": [ 0, 3, 3 ],
             "entry": "scripts/hgncb/main.js"
         }
     ],
@@ -48,7 +48,7 @@
         },
         {
             "uuid": "2210b699-e1ad-4661-ba07-f4e8ad236aaa",
-            "version": [ 0, 3, 2 ]
+            "version": [ 0, 3, 3 ]
         },
 
         {

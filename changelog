@@ -56,3 +56,14 @@
 ### Random Events
 - fixed a bug where the message that says a player has joined won't show up
 - made the map reset when everyone leaves
+# v0.3.3-alpha.rev0 changelog:
+### KitPVP
+- replaced the Fishing Rod with Snowballs in the Flash kit
+- increased the mace AoE knockback
+- replaced the damage splash potion in the Alchemist kit with a lingering potion
+- reduced the gapple cooldown
+- added the Fisherman kit, which has a pufferfish that deals poison damage in a 3 block radius
+- added a 20-tick window where you cannot select a kit
+- fixed incorrect colors on level up title
+### Random Events
+- fixed a bug where you could still gain losses in Creative
