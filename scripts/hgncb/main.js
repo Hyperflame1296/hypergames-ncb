@@ -39,6 +39,7 @@ let hg = {
         '\xa7f---\xa7bADMIN RULES\xa7f---',
         '    #\xa7b12 \xa7f- \xa7bNo admin abuse\xa7f.',
         '    #\xa7b13 \xa7f- \xa7bDo not interfere with games unless given permission by the owner\xa7f.',
+        '    #\xa7b14 \xa7f- \xa7bDo not grief. this one seems obvious\xa7f.',
         '    #\xa7b14 \xa7f- \xa7bDo not kick people without giving them warnings\xa7f.',
         '    #\xa7b15 \xa7f- \xa7bIf someone accuses another person of breaking the rules, you must first verify if they are telling the truth\xa7f.'
     ],
@@ -110,7 +111,6 @@ let hg = {
         // math
         random2: (a, b) => (Math.random() * (b - a)) + a,
         get_knockback_direction: (a, b) => Math.atan2(b.z - a.z, b.x - a.x),
-        calculate_height: vel => vel ** 2 / (0.08 * (1 - 0.98 ** 2)),
         asyncPause: t => new Promise(resolve => s.system.runTimeout(resolve, t)),
         // other
         censor: input => {
@@ -501,6 +501,7 @@ let hg = {
                 if (
                     damage.cause !== 'maceSmash' && 
                     damage.cause !== 'sonicBoom' && 
+                    damage.cause !== 'thorns' && 
                     target.isSneaking && 
                     target_equipment.offhand?.typeId === 'minecraft:shield' && 
                     (target.getDynamicProperty('hgncb:timer.kitpvp.shield_cd') ?? 0) <= 0 &&
@@ -587,11 +588,11 @@ let hg = {
                             pitch: hg.methods.random2(0.8, 1.2)
                         })
                         attacker.teleport({
-                            x: attacker.getSpawnPoint()?.x ?? s.world.getDefaultSpawnLocation().x,
-                            y: attacker.getSpawnPoint()?.y ?? s.world.getDefaultSpawnLocation().y,
-                            z: attacker.getSpawnPoint()?.z ?? s.world.getDefaultSpawnLocation().z
+                            x: attacker.getSpawnPoint?.()?.x ?? s.world.getDefaultSpawnLocation?.().x,
+                            y: attacker.getSpawnPoint?.()?.y ?? s.world.getDefaultSpawnLocation?.().y,
+                            z: attacker.getSpawnPoint?.()?.z ?? s.world.getDefaultSpawnLocation?.().z
                         }, {
-                            dimension: attacker.getSpawnPoint()?.dimension ?? hg.dimensions.overworld
+                            dimension: attacker.getSpawnPoint?.()?.dimension ?? hg.dimensions.overworld
                         })
                         target ? this.globalDeathHandle(target, attacker, 'thorns', giveTo) : this.diffDeath(attacker, 'thorns', giveTo)
                         attacker.runCommand('clear')
@@ -636,7 +637,7 @@ let hg = {
                         volume: 1,
                         pitch: hg.methods.random2(0.8, 1.2)
                     }) : void 0;
-                    damage.attacker > 0 && cause === 'thorns' ? target.dimension.playSound('damage.thorns', target.location, {
+                    damage.target > 0 && cause === 'thorns' ? target.dimension.playSound('damage.thorns', target.location, {
                         volume: 1,
                         pitch: hg.methods.random2(0.8, 1.2)
                     }) : void 0;
@@ -663,171 +664,171 @@ let hg = {
                     switch (method) {
                         case 'anvil':
                             attacker && attacker.isValid ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling anvil`)
                             break;
                         case 'blockExplosion':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design] due to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design] due to \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design]`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas killed by [Intentional Game Design]`)
                             break;
                         case 'campfire':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwalked into a campfire whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into a campfire`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwalked into a campfire`)
                             break;
                         case 'clogPrevent':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7icombat logged to \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7icombat logged to \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7icombat logged`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7icombat logged`)
                             break;
                         case 'contact':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'drowning':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idrowned whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idrowned whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idrowned`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idrowned`)
                             break;
                         case 'entityAttack':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas slain by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'entityExplosion':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas blown up by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas blown up by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iblew up`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iblew up`)
                             break;
                         case 'fall':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ifell from a high place whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell from a high place`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ifell from a high place`)
                             break;
                         case 'fallingBlock':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas squashed by a falling block`)
                             break;
                         case 'fire':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into fire whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwalked into fire whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent up in flames`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwent up in flames`)
                             break;
                         case 'fireTick':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iburned to death whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iburned to death whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iburned to death`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iburned to death`)
                             break;
                         case 'fireworks':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwent off with a bang whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwent off with a bang`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwent off with a bang`)
                             break;
                         case 'fly_into_wall':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iexperienced kinetic energy`)
                             break;
                         case 'freezing':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ibecame an ice block whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ibecame an ice block whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifroze to death`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ifroze to death`)
                             break;
                         case 'lava':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7itried to swim in lava to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                                 :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7itried to swim in lava`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7itried to swim in lava`)
                             break;
                         case 'lightning':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas struck by lightning whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                                 :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas struck by lightning`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas struck by lightning`)
                             break;
                         case 'maceSmash':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas smashed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas smashed by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'magic':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i using magic`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas killed by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}\xa7i using magic`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed by magic`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas killed by magic`)
                             break;
                         case 'magma':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwalked into danger zone whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwalked into danger zone whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idiscovered floor was lava`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idiscovered floor was lava`)
                             break;
                         case 'none':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'override':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'piston':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i.`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}\xa7i.`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'projectile':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas shot by \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas shot by \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'sonicBoom':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated by a sonically-charged shriek whilst trying to escape \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas obliterated by a sonically-charged shriek whilst trying to escape \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas obliterated by a sonically-charged shriek`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas obliterated by a sonically-charged shriek`)
                             break;
                         case 'thorns':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7iwas killed trying to hurt \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7iwas killed trying to hurt \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                         case 'void':
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ididn\'t want to live in the same world as \xa7f${attacker.name ?? `%${attacker.localizationKey}`}`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ididn\'t want to live in the same world as \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7ifell out of the world`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7ifell out of the world`)
                             break;
                         default:
                             attacker && attacker.isValid  ? 
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${attacker.name ?? `%${attacker.localizationKey}`}\xa7i`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied because of \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`}\xa7i`)
                             :
-                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${target.name ?? `%${target.localizationKey}`} \xa7idied`)
+                                player.sendMessage(`\xa7cX_X \xa7i» \xa7r${(target.getDynamicProperty('hgncb:display_name') ?? target.name) ?? `%${target.localizationKey}`} \xa7idied`)
                             break;
                     }
                 }
@@ -1018,6 +1019,8 @@ let hg = {
                     player.addTag(`hgncb:random_events.dead`);
                     player.removeTag(`hgncb:duels.picked`);
 
+
+
                     player.inputPermissions.setPermissionCategory(1, true)
                     player.inputPermissions.setPermissionCategory(2, true)
                 } catch (err) {
@@ -1030,7 +1033,7 @@ let hg = {
             forEachPlayer: function(player) {
                 if (player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Survival')
                     player.setGameMode('Survival')
-                player.nameTag = hg.methods.getRankText(player) + player.name
+                player.nameTag = hg.methods.getRankText(player) + (player.getDynamicProperty('hgncb:display_name') ?? player.name)
                 player.runCommand('clear @s[m=!c]')
                 
                 player.onScreenDisplay.setActionBar([
@@ -1702,6 +1705,10 @@ let hg = {
                                     {
                                         level: 2,
                                         type: 'protection'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'thorns'
                                     }
                                 ]
                             },
@@ -1712,6 +1719,10 @@ let hg = {
                                     {
                                         level: 2,
                                         type: 'protection'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'thorns'
                                     }
                                 ]
                             },
@@ -1722,6 +1733,10 @@ let hg = {
                                     {
                                         level: 2,
                                         type: 'protection'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'thorns'
                                     }
                                 ]
                             },
@@ -1732,6 +1747,10 @@ let hg = {
                                     {
                                         level: 2,
                                         type: 'protection'
+                                    },
+                                    {
+                                        level: 1,
+                                        type: 'thorns'
                                     }
                                 ]
                             },
@@ -2015,7 +2034,7 @@ let hg = {
                         icon: 'minecraft:mace',
                         desc: [
                             '\xa7qWith this kit, you are given a Mace, which comes with Wind Charges.',
-                            '\xa7qThese Wind Charges have a cooldown of 5 seconds.'
+                            '\xa7qThese Wind Charges have a cooldown of 4 seconds.'
                         ],
                         ench: false,
                         items: [
@@ -2454,7 +2473,7 @@ let hg = {
                                     attacker.sendMessage(`\xa7a^_^ \xa7i» \xa7iYou win \xa7b500\xa7i coins!`)
                                     ms = true
                                     for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.kitpvp'] })) {
-                                        player.sendMessage(`\xa7a^_^ \xa7i» \xa7f${attacker.name ?? `%${attacker.localizationKey}`} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
+                                        player.sendMessage(`\xa7a^_^ \xa7i» \xa7f${(attacker.getDynamicProperty('hgncb:display_name') ?? attacker.name) ?? `%${attacker.localizationKey}`} \xa7ihas gotten \xa7b${attacker_kills + 1}\xa7i kills!`)
                                         s.system.run(() => 
                                             player.isValid ? 
                                                 player.playSound('random.levelup', {
@@ -2704,11 +2723,11 @@ let hg = {
                 },
                 // #endregion kitpvp_showLeave
                 // #region kitpvp_showKitSel
-                showKitSel: function(player, a=true) {
+                showKitSel: function(player, begin) {
                     if (!player || !player.isValid)
                         return;
                     try {
-                        let begin = a ? s.system.currentTick : 0;
+                        begin = begin ?? Date.now()
                         let kitnames = (player.getDynamicProperty('hgncb:kitpvp.kits') ?? 'basic').split(',')
                         let game = hg.minigames.find(m => m.id === 'kitpvp')
                         let kits = kitnames.map(n => game.properties.kits.find(k => k.id === n))
@@ -2750,7 +2769,7 @@ let hg = {
                                 return -1;
                             if (res.canceled) {
                                 player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', true)
-                                this.showKitSel(player, false)
+                                this.showKitSel(player, begin)
                                 return -1;
                             } else {
                                 if (res.selection === shop) {
@@ -2767,7 +2786,7 @@ let hg = {
                                     return -1
                                 } else {
                                     let selection = n_kits.find(k => k[0] === res.selection)?.[1]
-                                    if (selection && (s.system.currentTick - begin > 20)) {
+                                    if (selection && (Date.now() - begin > 1000)) {
                                         player.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
                                         player.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
                                         player.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
@@ -2853,7 +2872,7 @@ let hg = {
             onTick: function() {
                 for (let entity of hg.dimensions.overworld.getEntities({ tags: ['hgncb:kitpvp.entity_on_timer'] })) {
                     let time_placed = entity.getDynamicProperty('hgncb:kitpvp.time_placed') ?? 0
-                    let life_time = s.system.currentTick - time_placed;
+                    let life_time = Date.now() - time_placed;
                     let placed_by = entity.dimension.getPlayers().find(p => p.id === entity.getDynamicProperty('hgncb:kitpvp.placed_by') ?? 0)
 
                     switch (entity.typeId) {
@@ -2873,7 +2892,7 @@ let hg = {
                             break
                     }
 
-                    if (life_time >= 100) {
+                    if (life_time >= 5000) {
                         entity.dimension.playSound('random.explode', entity.location, {
                             pitch: 1.8,
                             volume: 0.9
@@ -2915,7 +2934,7 @@ let hg = {
                         return '\xa7a\xa7oSelecting kit...'
                     else return `${health_color}${health_percentage.toFixed(2)}\xa7r%`
                 })
-                player.nameTag = hg.methods.getRankText(player) + player.name + `\n${nametagFunc()}`
+                player.nameTag = hg.methods.getRankText(player) + (player.getDynamicProperty('hgncb:display_name') ?? player.name) + `\n${nametagFunc()}`
                 let kills  = player.getDynamicProperty('hgncb:kitpvp.kills') ?? 0
                 let deaths = player.getDynamicProperty('hgncb:kitpvp.deaths') ?? 0
                 let revoked_deaths = player.getDynamicProperty('hgncb:kitpvp.revoked_deaths') ?? 0
@@ -3361,7 +3380,7 @@ let hg = {
                     let game = hg.minigames.find(m => m.id === 'random_events')
                     let players_creative = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'] })
                     let players          = hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.random_events'], excludeGameModes: ['Creative'] })
-                    hg.dimensions.overworld.runCommand('structure load hgncb:random_events.str.map -1025 250 -25')
+                    hg.dimensions.overworld.runCommand('structure load hgncb:random_events.str.map -1025 250 -25 0_degrees none layer_by_layer 2.0 false')
 
                     s.world.setDynamicProperty('hgncb:timer.random_events.water_rain'       , 0)
                     s.world.setDynamicProperty('hgncb:timer.random_events.water_rain_insane', 0)
@@ -3390,13 +3409,13 @@ let hg = {
                                     y: game.location.y + 1,
                                     z: Math.sin((i / players.length) * (2 * Math.PI)) * 23 + game.location.z
                                 }
-                                s.system.run(() => player.teleport(pos, {
+                                player.teleport(pos, {
                                     facingLocation: {
                                         x: game.location.x,
                                         y: game.location.y + 3,
                                         z: game.location.z
                                     }
-                                }))
+                                })
                             }
                         }
                     }
@@ -3537,7 +3556,7 @@ let hg = {
                     if (players_remaining === 1) {
                         let winner = players_alive[0];
                         for (let player of players_creative) {
-                            player.sendMessage(`\xa7eGame \xa7i» \xa7b${winner.name} \xa7fhas won!`)
+                            player.sendMessage(`\xa7eGame \xa7i» \xa7b${winner.getDynamicProperty('hgncb:display_name') ?? winner.name} \xa7fhas won!`)
                             player.playSound('random.levelup', {
                                 pitch : 2.0,
                                 volume: 1.0
@@ -3758,7 +3777,7 @@ let hg = {
                     else return `\xa7aWins\xa7f: \xa7a${wins}\xa7r | \xa7cLosses\xa7f: \xa7c${losses}\xa7r`
                 })
 
-                player.nameTag = hg.methods.getRankText(player) + player.name + `\n${nametagFunc()}`
+                player.nameTag = hg.methods.getRankText(player) + (player.getDynamicProperty('hgncb:display_name') ?? player.name) + `\n${nametagFunc()}`
                 player.onScreenDisplay.setActionBar([
                     `\xa7aWins\xa7f: ${wins}\n`,
                     `\xa7cLosses\xa7f: ${losses}\n`,
@@ -3796,7 +3815,7 @@ let hg = {
                 }
                 if (!game_started) {
                     let game_start_timer = s.world.getDynamicProperty('hgncb:timer.random_events.game_start');
-                    player.getGameMode() !== 'Creative' ? player.teleport(player.location) : void 0
+                    player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Spectator' ? player.teleport(player.location) : void 0
                     if (game_start_timer === 61) {
                         player.onScreenDisplay.setTitle('\xa7a3\xa7f...')
                         player.playSound('note.bit', {
@@ -3919,32 +3938,32 @@ let hg = {
                         if (player) {
                             player.removeTag('hgncb:duels.dead')
                             if (player.isValid) {
-                                player.inputPermissions.setPermissionCategory(1, false)
-                                player.inputPermissions.setPermissionCategory(2, false)
-
                                 player.runCommand('clear @s')
                                 player.runCommand('effect @s clear')
                                 let picked = player.hasTag('hgncb:duels.picked')
-                                if (picked)
-                                    player.setGameMode('Survival')
-                                else
-                                    player.getGameMode() !== 'Spectator' ? player.setGameMode('Spectator') : void 0;
-                                
                                 if (picked) {
+                                    player.setGameMode('Survival')
+                                    player.inputPermissions.setPermissionCategory(1, false)
+                                    player.inputPermissions.setPermissionCategory(2, false)
+
                                     player.extinguishFire()
                                     let pos = {
                                         x: Math.cos((i / 2) * (2 * Math.PI)) * 13 + game.location.x + 1,
                                         y: game.location.y + 1,
-                                        z: Math.sin((i / 2) * (2 * Math.PI)) * 14 + game.location.z
+                                        z: Math.sin((i / 2) * (2 * Math.PI)) * 13 + game.location.z + 1
                                     }
-                                    s.system.run(() => player.teleport(pos, {
+                                    player.teleport(pos, {
                                         facingLocation: {
                                             x: game.location.x,
-                                            y: game.location.y + 3,
+                                            y: player.getHeadLocation().y,
                                             z: game.location.z
                                         }
-                                    }))
+                                    })
                                     i += 1
+                                } else {
+                                    player.getGameMode() !== 'Spectator' ? player.setGameMode('Spectator') : void 0;
+                                    player.inputPermissions.setPermissionCategory(1, true)
+                                    player.inputPermissions.setPermissionCategory(2, true)
                                 }
                             }
                         }
@@ -3956,12 +3975,6 @@ let hg = {
                     if (!target.hasTag('hgncb:duels.dead') && game_started && !someone_won) {
                         hg.methods.death_message(attacker, target, method, { tags: ['hgncb:minigame.duels'] })
                         target.addTag('hgncb:duels.dead')
-
-                        s.system.run(() => {
-                            for (let player of hg.dimensions.overworld.getPlayers({ tags: ['hgncb:minigame.duels'] })) {
-                                player?.runCommand('playsound note.hat @s ~ ~ ~ 1 0.5 1')
-                            }
-                        })
                     }
                 }
             },
@@ -4008,6 +4021,20 @@ let hg = {
                     player.setGameMode('Spectator')
                     player.runCommand('effect @s clear')
                     player.addTag(`hgncb:minigame.${this.id}`);
+
+                    if (player.dimension.getPlayers({ tags: [`hgncb:minigame.${this.id}`] }).length === 2) {
+                        for (let v of player.dimension.getPlayers({ tags: [`hgncb:minigame.${this.id}`] })) {
+                            v.sendMessage(`\xa7eGame \xa7i» \xa7fA player has joined! Resetting...`)
+                            v.playSound('random.orb', {
+                                pitch : 2.0,
+                                volume: 1.0
+                            })
+                            s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
+                            s.system.runTimeout(() => {
+                                this.methods.reset()
+                            }, 80)
+                        }
+                    }
                 } catch (err) {
                     s.world.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`)
                 }
@@ -4026,18 +4053,20 @@ let hg = {
                     if (players_remaining === 1) {
                         let winner = players_alive[0];
                         for (let player of players_creative) {
-                            player.sendMessage(`\xa7eGame \xa7i» \xa7b${winner.name} \xa7fhas won!`)
+                            player.sendMessage(`\xa7eGame \xa7i» \xa7b${winner.getDynamicProperty('hgncb:display_name') ?? winner.name} \xa7fhas won!`)
                             player.playSound('random.levelup', {
                                 pitch : 2.0,
                                 volume: 1.0
                             })
                             let wins   = player.getDynamicProperty('hgncb:duels.wins'  ) ?? 0
                             let losses = player.getDynamicProperty('hgncb:duels.losses') ?? 0
-                            if (player.getGameMode() !== 'Creative')
+                            let died = player.hasTag('hgncb:duels.dead') && player.hasTag('hgncb:duels.picked')
+                            if (player.getGameMode() !== 'Creative') {
                                 if (player.id === winner.id)
                                     player.setDynamicProperty('hgncb:duels.wins'  , wins   + 1)
-                                else
+                                else if (died)
                                     player.setDynamicProperty('hgncb:duels.losses', losses + 1)
+                            }
                             s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
                             someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
                             s.system.runTimeout(() => {
@@ -4053,7 +4082,8 @@ let hg = {
                             })
                             let wins   = player.getDynamicProperty('hgncb:duels.wins'  ) ?? 0
                             let losses = player.getDynamicProperty('hgncb:duels.losses') ?? 0
-                            if (player.getGameMode() !== 'Creative')
+                            let not_in_game = !player.hasTag('hgncb:duels.picked')
+                            if (player.getGameMode() !== 'Creative' && !not_in_game)
                                 player.setDynamicProperty('hgncb:duels.losses', losses + 1)
                             s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
                             someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
@@ -4070,7 +4100,8 @@ let hg = {
                             })
                             let wins   = player.getDynamicProperty('hgncb:duels.wins'  ) ?? 0
                             let losses = player.getDynamicProperty('hgncb:duels.losses') ?? 0
-                            if (player.getGameMode() !== 'Creative')
+                            let not_in_game = !player.hasTag('hgncb:duels.picked')
+                            if (player.getGameMode() !== 'Creative' && !not_in_game)
                                 player.setDynamicProperty('hgncb:duels.losses', losses + 1)
                             s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
                             someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
@@ -4100,21 +4131,37 @@ let hg = {
 
                 let wlr_a = (losses) <= 0 ? wins : (wins) / (losses)
                 let wlr_b = isNaN(wlr_a) ? 0 : (isFinite(wlr_a) ? wlr_a : wins)
+
+                let health = player.getComponent('minecraft:health')
+                let health_percentage = (health.currentValue / health.effectiveMax) * 100
+                let health_color = (() => {
+                    if (health_percentage >= 100 || (health_percentage < 100 && health_percentage >= 75))
+                        return '\xa7a'
+                    else if (health_percentage < 75 && health_percentage >= 50)
+                        return '\xa7e'
+                    else if (health_percentage < 50 && health_percentage >= 25)
+                        return '\xa76'
+                    else if (health_percentage < 25 && health_percentage >= 0)
+                        return '\xa7c'
+                    else
+                        return '\xa7c'
+                })();
+
                 let nametagFunc = (() => {
                     if (player.getGameMode() === 'Creative') 
                         return '\xa7i\xa7oIn creative mode...'
                     else if (player.getDynamicProperty('hgncb:duels.is_viewing_leaderboard')) 
                         return '\xa7a\xa7oViewing leaderboard...'
-                    else return `\xa7aWins\xa7f: \xa7a${wins}\xa7r | \xa7cLosses\xa7f: \xa7c${losses}\xa7r`
+                    else return `${health_color}${health_percentage.toFixed(2)}\xa7r% \xa7i| \xa7a${wins}\xa7r - \xa7c${losses}\xa7r`
                 })
 
-                player.nameTag = hg.methods.getRankText(player) + player.name + `\n${nametagFunc()}`
+                player.nameTag = hg.methods.getRankText(player) + (player.getDynamicProperty('hgncb:display_name') ?? player.name) + `\n${nametagFunc()}`
                 player.onScreenDisplay.setActionBar([
                     `\xa7aWins\xa7f: ${wins}\n`,
                     `\xa7cLosses\xa7f: ${losses}\n`,
                     `\xa7bWLR\xa7f: ${wlr_b.toFixed(3)}\n`,
                     `\xa7bTime left\xa7f: ${(time_left / 20).toFixed(2)}s\n`,
-                    `${game_can_continue ? `\xa7f${players_remaining}\xa7b players remaining\xa7f...` : `\xa7cDuels requires 2 or more players\xa7f.`}`,
+                    `${game_can_continue ? `\xa7bA game is running\xa7f...` : `\xa7cDuels requires 2 or more players\xa7f.`}`,
                 ])
 
                 if (someone_won) {
@@ -4140,7 +4187,7 @@ let hg = {
                 }
                 if (!game_started) {
                     let game_start_timer = s.world.getDynamicProperty('hgncb:timer.duels.game_start');
-                    player.getGameMode() !== 'Creative' ? player.teleport(player.location) : void 0
+                    player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Spectator' ? player.teleport(player.location) : void 0
                     if (game_start_timer === 61) {
                         player.onScreenDisplay.setTitle('\xa7a3\xa7f...')
                         player.playSound('note.bit', {
@@ -4169,30 +4216,30 @@ let hg = {
                         player.inputPermissions.setPermissionCategory(2, true)
                     }
 
-                    player.addEffect('resistance', 60, {
+                    player.addEffect('resistance', 20, {
                         amplifier: 255,
                         showParticles: true
                     }),
-                    player.addEffect('saturation', 60, {
+                    player.addEffect('saturation', 20, {
                         amplifier: 255,
                         showParticles: true
                     })
-                    player.addEffect('instant_health', 60, {
+                    player.addEffect('instant_health', 20, {
                         amplifier: 255,
                         showParticles: true
                     })
                 }
 
                 if (someone_won || !game_can_continue) {
-                    player.addEffect('resistance', 60, {
+                    player.addEffect('resistance', 20, {
                         amplifier: 255,
                         showParticles: true
                     }),
-                    player.addEffect('saturation', 60, {
+                    player.addEffect('saturation', 20, {
                         amplifier: 255,
                         showParticles: true
                     })
-                    player.addEffect('instant_health', 60, {
+                    player.addEffect('instant_health', 20, {
                         amplifier: 255,
                         showParticles: true
                     })
@@ -4207,7 +4254,6 @@ let hg = {
                 if (not_in_game && player.getGameMode() !== 'Spectator' && player.getGameMode() !== 'Creative')
                     player.setGameMode('Spectator')
 
-                player.nameTag = hg.methods.getRankText(player) + player.name
                 player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_sword         }] run give @s[tag="hgncb:minigame.duels"]                                      iron_sword          1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                 player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=iron_axe           }] run give @s[tag="hgncb:minigame.duels"]                                      iron_axe            1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
                 player.runCommand('execute as @a[m=!c] unless entity @s[hasitem={item=bow                }] run give @s[tag="hgncb:minigame.duels"]                                      bow                 1 0 {"minecraft:item_lock":{"mode":"lock_in_inventory"}}')
@@ -4293,7 +4339,7 @@ let hg = {
             forEachPlayer: function(player) {
                 if (player.getGameMode() !== 'Creative' && player.getGameMode() !== 'Survival')
                     player.setGameMode('Survival')
-                player.nameTag = hg.methods.getRankText(player) + player.name
+                player.nameTag = hg.methods.getRankText(player) + (player.getDynamicProperty('hgncb:display_name') ?? player.name)
                 player.runCommand('clear @s[m=!c]')
                 
                 player.onScreenDisplay.setActionBar([
@@ -4520,6 +4566,24 @@ let hg = {
                                     break;
                                 case 'random_events':
                                     break;
+                                case 'duels':
+                                    if (item) {
+                                        switch (item.typeId) {
+                                            case 'minecraft:golden_apple':
+                                                let gapple_timer = player.getDynamicProperty('hgncb:timer.duels.gapple') ?? 0
+                                                
+                                                if (gapple_timer > 0) {
+                                                    e.cancel = true;
+                                                    player.sendMessage(`\xa7cDenied \xa7i» \xa7cYou can\'t use this item \xa7i(Golden Apple) \xa7cright now! \xa7i(${(gapple_timer / 20).toFixed(2)}s)`)
+                                                    s.system.run(() => player.playSound('note.bass', {
+                                                        pitch : 1.0,
+                                                        volume: 1.0
+                                                    }))
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    break;
                                 default:
                                     break;
                             }
@@ -4543,8 +4607,8 @@ let hg = {
                 let game = hg.methods.getMinigame(player)
                 if (game && !game.permissions.break_block && player.getGameMode() !== 'Creative') {
                     e.cancel = true; // cancel the event
-                    s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t break blocks in this area\xa7i.`) : void 0;
-                    s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.setDynamicProperty('hgncb:info.last_perm_info', s.system.currentTick) : void 0;
+                    Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t break blocks in this area\xa7i.`) : void 0;
+                    Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.setDynamicProperty('hgncb:info.last_perm_info', Date.now()) : void 0;
                     return;
                 }
             },
@@ -4556,8 +4620,8 @@ let hg = {
                 let game = hg.methods.getMinigame(player)
                 if (game && !game.permissions.place_block && player.getGameMode() !== 'Creative') {
                     e.cancel = true; // cancel the event
-                    s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t place blocks in this area\xa7i.`) : void 0;
-                    s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.setDynamicProperty('hgncb:info.last_perm_info', s.system.currentTick) : void 0;
+                    Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t place blocks in this area\xa7i.`) : void 0;
+                    Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.setDynamicProperty('hgncb:info.last_perm_info', Date.now()) : void 0;
                     return;
                 }
             },
@@ -4587,9 +4651,13 @@ let hg = {
                                         x: block.location.x + 0.5,
                                         y: block.location.y + 1.0,
                                         z: block.location.z + 0.5
+                                    }, {
+                                        initialPersistence: true,
+                                        spawnEvent: 'minecraft:start_full_puff'
                                     });
-                                    player.setDynamicProperty('hgncb:timer.kitpvp.pufferfish', 200)
-                                    pufferfish.setDynamicProperty('hgncb:kitpvp.time_placed', s.system.currentTick)
+                                    player.dimension.playSound('bucket.empty_fish', player.location)
+                                    player.setDynamicProperty('hgncb:timer.kitpvp.pufferfish', 150)
+                                    pufferfish.setDynamicProperty('hgncb:kitpvp.time_placed', Date.now())
                                     pufferfish.setDynamicProperty('hgncb:kitpvp.placed_by', player.id)
                                     pufferfish.addTag('hgncb:kitpvp.entity_on_timer')
                                 }
@@ -4599,8 +4667,8 @@ let hg = {
                     default:
                         if (game && !game.permissions.interact_with_block && player.getGameMode() !== 'Creative') {
                             e.cancel = true; // cancel the event
-                            s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t interact with blocks in this area\xa7i.`) : void 0;
-                            s.system.currentTick - player.getDynamicProperty('hgncb:info.last_perm_info') > 10 ? player.setDynamicProperty('hgncb:info.last_perm_info', s.system.currentTick) : void 0;
+                            Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.sendMessage(`\xa7cDenied \xa7i»\xa7r \xa7fYou can\'t interact with blocks in this area\xa7i.`) : void 0;
+                            Date.now() - player.getDynamicProperty('hgncb:info.last_perm_info') > 500 ? player.setDynamicProperty('hgncb:info.last_perm_info', Date.now()) : void 0;
                         }
                 }
             }
@@ -4636,6 +4704,19 @@ let hg = {
                                     }
                                     break;
                                 case 'random_events':
+                                    break;
+                                case 'duels':
+                                    if (item) {
+                                        switch (item.typeId) {
+                                            case 'minecraft:golden_apple':
+                                                let gapple_timer = player.getDynamicProperty('hgncb:timer.duels.gapple') ?? 0
+                                                
+                                                if (gapple_timer > 0) {
+                                                    return;
+                                                } else player.setDynamicProperty('hgncb:timer.duels.gapple', 50)
+                                                break;
+                                        }
+                                    }
                                     break;
                                 default:
                                     break;
@@ -4677,6 +4758,13 @@ let hg = {
                             volume: 1.0
                         })
                     }, 120)
+                    s.system.runTimeout(() => {
+                        player.sendMessage('\xa7bInfo \xa7i» \xa7fPlease download the resource packs if you haven\'t already - HyperGames requires them!')
+                        player.playSound('random.pop', {
+                            pitch: 1.0,
+                            volume: 1.0
+                        })
+                    }, 180)
                 }
             },
             // #endregion listen_playerspawn
@@ -4693,7 +4781,7 @@ let hg = {
                         case 'kitpvp':
                             if (e.projectile.typeId === 'minecraft:lingering_potion' || e.projectile.typeId === 'minecraft:splash_potion')
                                 return;
-                            if (e.projectile.typeId === 'minecraft:arrow') {
+                            if (e.projectile.typeId === 'minecraft:arrow' && e.projectile.isValid) {
                                 hg.methods.applyCustomDamage(1 * Math.hypot(e.projectile.getVelocity().x, e.projectile.getVelocity().y, e.projectile.getVelocity().z), { 
                                     attacker, 
                                     target, 
@@ -4724,11 +4812,21 @@ let hg = {
                                     pitch: 0.5,
                                     volume: 1.0
                                 })
-                                attacker?.setDynamicProperty('hgncb:kitpvp.last_hit', s.system.currentTick)
+                                attacker?.setDynamicProperty('hgncb:kitpvp.last_hit', Date.now())
                                 attacker?.setDynamicProperty('hgncb:timer.kitpvp.combat', 300)
                                 target?.setDynamicProperty('hgncb:timer.kitpvp.combat', 300)
                                 attacker?.setDynamicProperty('hgncb:kitpvp.combat_id', target.id)
                                 target?.setDynamicProperty('hgncb:kitpvp.combat_id', attacker.id)
+                            }
+                            break;
+                        case 'duels':
+                            if (!attacker || !attacker.isValid)
+                                return;
+                            if (attacker?.id !== target?.id && attacker?.typeId === 'minecraft:player' && target?.typeId === 'minecraft:player' && attacker.getGameMode() !== 'Creative' && target.getGameMode() !== 'Creative') {
+                                attacker?.playSound('random.orb', {
+                                    pitch: 0.5,
+                                    volume: 1.0
+                                })
                             }
                             break;
                         default:
@@ -4773,8 +4871,8 @@ let hg = {
                             }
                             
                             if (target.typeId === 'minecraft:player' && attacker.getGameMode() !== 'Creative' && target.getGameMode() !== 'Creative') {
-                                attacker.setDynamicProperty('hgncb:kitpvp.last_hit', s.system.currentTick)
-                                target.setDynamicProperty('hgncb:kitpvp.last_hit', s.system.currentTick)
+                                attacker.setDynamicProperty('hgncb:kitpvp.last_hit', Date.now())
+                                target.setDynamicProperty('hgncb:kitpvp.last_hit', Date.now())
                                 attacker.setDynamicProperty('hgncb:timer.kitpvp.combat', 300)
                                 target.setDynamicProperty('hgncb:timer.kitpvp.combat', 300)
                                 attacker.setDynamicProperty('hgncb:kitpvp.combat_id', target.id)
@@ -4870,7 +4968,7 @@ let hg = {
                             for (let i = 0; i < 100; i++) { // clear the chat by sending a bunch of empty messages
                                 s.world.sendMessage(' ');
                             }
-                            s.world.sendMessage(`\xa7i\xa7o${player.name} has cleared the chat.`);
+                            s.world.sendMessage(`\xa7i\xa7o${player.getDynamicProperty('hgncb:display_name') ?? player.name} has cleared the chat.`);
                         }
                     },
                     {
@@ -5002,15 +5100,16 @@ let hg = {
                 e.customCommandRegistry.registerEnum('hgncb:setting_type',  ['enableKitPvpSounds'])
                 e.customCommandRegistry.registerEnum('hgncb:debug_command', ['eval', 'prop_set', 'prop_add', 'no_shop'])
                 e.customCommandRegistry.registerEnum('hgncb:server_id', [
-                    'kitpvp', 
-                    'random_events',
-                    'hunger_games',
-                    'duels', 
-                    'parkour', 
-                    'skygen', 
                     'bedwars',
+                    'bridgewars',
                     'draw',
-                    'bridge_wars'
+                    'duels', 
+                    'hunger_games',
+                    'kitpvp', 
+                    'parkour',
+                    'random_events',
+                    'skygen', 
+                    'skywars', 
                 ])
                 e.customCommandRegistry.registerCommand(
                     {
@@ -5236,7 +5335,7 @@ let hg = {
                     } else {
                         if (player.getDynamicProperty('hgncb:starting_height') && player.getDynamicProperty('hgncb:fall_height')) {
                             if (!player.isInWater && !player.isClimbing) {
-                                let is_on_hay = player.dimension.getBlockBelow(player.location).typeId === 'minecraft:hay_block'
+                                let is_on_hay = player.dimension.getBlockBelow(player.location)?.typeId === 'minecraft:hay_block'
                                 let hay_reduction = (is_on_hay ? 0.8 : 0.0)
                                 let safe = 3.0
                                 let fall_distance = player.getDynamicProperty('hgncb:fall_height')
@@ -5288,35 +5387,37 @@ let hg = {
                 }
             }
         }
-        if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length > 1) {
-            let title = hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).slice(1)[0]
-            title.remove();
-        } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length <= 0) {
-            let loc = {
-                x: 0.5,
-                y: 10,
-                z: 17.5
+        try {
+            if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length > 1) {
+                let title = hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).slice(1)[0]
+                title.remove();
+            } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length <= 0) {
+                let loc = {
+                    x: 0.5,
+                    y: 10,
+                    z: 17.5
+                }
+                let title = hg.dimensions.overworld.spawnEntity('hgncb:title', loc);
+                title.addTag(`hgncb:hub_title`)
+                title.teleport(loc, {
+                    facingLocation: { x: 0.5, y: 4, z: 0.5 }
+                })
+            } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length > 0) {
+                let loc = {
+                    x: 0.5,
+                    y: 10,
+                    z: 17.5
+                }
+                let title = hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] })[0]
+                title.teleport({
+                    x: 0.5,
+                    y: 10,
+                    z: 17.5
+                }, {
+                    facingLocation: { x: 0.5, y: 4, z: 0.5 }
+                })
             }
-            let title = hg.dimensions.overworld.spawnEntity('hgncb:title', loc);
-            title.addTag(`hgncb:hub_title`)
-            title.teleport(loc, {
-                facingLocation: { x: 0.5, y: 4, z: 0.5 }
-            })
-        } else if (hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] }).length > 0) {
-            let loc = {
-                x: 0.5,
-                y: 10,
-                z: 17.5
-            }
-            let title = hg.dimensions.overworld.getEntities({ tags: [`hgncb:hub_title`] })[0]
-            title.teleport({
-                x: 0.5,
-                y: 10,
-                z: 17.5
-            }, {
-                facingLocation: { x: 0.5, y: 4, z: 0.5 }
-            })
-        }
+        } catch (e) {}
         for (let game of hg.minigames) {
             game.onTick();
             for (let npc_data of game.npcs) {

@@ -3,12 +3,12 @@
     "minecraft:npc_dialogue": {
         "scenes": [
             {
-                "scene_tag": "hgncb:dialogue.bedwars_enter",
+                "scene_tag": "hgncb:dialogue.skywars_enter",
                 "buttons": [
                     {
                         "name": "Yes",
                         "commands": [
-                            "tag @initiator add hgncb:transfer.bedwars"
+                            "tag @initiator add hgncb:transfer.skywars"
                         ]
                     },
                     {
@@ -18,7 +18,7 @@
                 "text": {
                     "rawtext": [
                         {
-                            "text": "Are you sure you want to go to §uBedWars§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
+                            "text": "Are you sure you want to go to §uSkyWars§r?\n§uYou can always leave by typing §r/§uhub in chat§r!"
                         }
                     ]
                 }
