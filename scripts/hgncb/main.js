@@ -580,9 +580,10 @@ let hg = {
                             if (attacker) this.play_sound_condition('entity.player.attack.strong', attacker.dimension, { location: attacker.location }, { tags: ['hgncb:minigame.kitpvp'] }, p => p.getDynamicProperty('hgncb:setting.enableKitPvpSounds'))
                     }
                 }
-                if (attacker)
+                if (attacker && attacker.getGameMode?.() !== 'Creative')
                     if (((attacker_health.currentValue - damage.attacker) <= 0)) {
                         attacker_health.resetToMaxValue()
+                        attacker.dimension.spawnParticle('minecraft:large_explosion', attacker.getHeadLocation())
                         attacker.dimension.playSound(hg.methods.getHurtSound(damage.cause), attacker.location, {
                             volume: 1,
                             pitch: hg.methods.random2(0.8, 1.2)
@@ -617,6 +618,7 @@ let hg = {
 
                 if ((target_health.currentValue - damage.target) <= 0) {
                     target_health.resetToMaxValue()
+                    target.dimension.spawnParticle('minecraft:large_explosion', target.getHeadLocation())
                     target.dimension.playSound(hg.methods.getHurtSound(damage.cause), target.location, {
                         volume: 1,
                         pitch: hg.methods.random2(0.8, 1.2)
@@ -949,7 +951,7 @@ let hg = {
                 {
                     text: 'Duels [BETA]',
                     id: 'npc_duels',
-                    skin: 1,
+                    skin: 2,
                     location: {
                         x: 4.5,
                         y: 2.0,
@@ -2438,6 +2440,7 @@ let hg = {
                     player.setDynamicProperty('hgncb:kitpvp.lvl', new_lvl)
                 },
                 visualBar: function(value, size) {
+                    value = Math.min(Math.max(value, 0), 1)
                     let a = '\xa7a' + '|'.repeat(Math.floor(value * size))
                     let b = '\xa7i' + '|'.repeat(size - Math.floor(value * size))
 
@@ -2459,7 +2462,7 @@ let hg = {
                                 let attacker_health = attacker.getComponent('minecraft:health')
                                 let target_health = target.getComponent('minecraft:health')
                                 
-                                let coins_earned = 20 + Math.round(Math.random() * 15) + (target.hasTag('hgncb:kitpvp.event_target') ? 50 : 0)
+                                let coins_earned = 20 + Math.round(Math.random() * 15) + ((attacker.getDynamicProperty('hgncb:kitpvp.lvl') ?? 0) * 3) + (target.hasTag('hgncb:kitpvp.event_target') ? 50 : 0)
                                 let xp_earned = 10 + Math.round(Math.random() * 10) + (target.hasTag('hgncb:kitpvp.event_target') ? 20 : 0)
                                 let effect = s.world.getDynamicProperty('hgncb:kitpvp.global.event_effect') ?? (Math.random() < 0.5 ? 'resistance' : 'strength')
                                 if (target.hasTag('hgncb:kitpvp.event_target')) {
@@ -2892,6 +2895,18 @@ let hg = {
                             break
                     }
 
+                    entity.addEffect('resistance', 100, {
+                        amplifier: 255,
+                        showParticles: false
+                    })
+                    entity.addEffect('fire_resistance', 100, {
+                        amplifier: 255,
+                        showParticles: false
+                    })
+                    entity.addEffect('instant_health', 100, {
+                        amplifier: 255,
+                        showParticles: false
+                    })
                     if (life_time >= 5000) {
                         entity.dimension.playSound('random.explode', entity.location, {
                             pitch: 1.8,
@@ -4361,7 +4376,11 @@ let hg = {
         'sigma',
         'rizz',
         'gyatt',
-        'mew'
+        'gyat',
+        'tung tung',
+        'uwu',
+        'uvu',
+        'owo'
     ],
     command_prefix: '/',
     worldListeners: {
@@ -4655,7 +4674,7 @@ let hg = {
                                         initialPersistence: true,
                                         spawnEvent: 'minecraft:start_full_puff'
                                     });
-                                    player.dimension.playSound('bucket.empty_fish', player.location)
+                                    player.dimension.playSound('bucket.empty_fish', block.location)
                                     player.setDynamicProperty('hgncb:timer.kitpvp.pufferfish', 150)
                                     pufferfish.setDynamicProperty('hgncb:kitpvp.time_placed', Date.now())
                                     pufferfish.setDynamicProperty('hgncb:kitpvp.placed_by', player.id)
