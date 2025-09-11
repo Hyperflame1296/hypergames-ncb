@@ -7,7 +7,7 @@ import * as cui from './modules/chest_ui/forms.js';
 import      b64 from './b64.js'
 
 /*
-    hypergames ncb v0.3.3-alpha.rev0
+    hypergames ncb v0.3.4-alpha.rev0
     probably not gonna be finished for a while
 */
 
@@ -21,11 +21,11 @@ gt.register(
 ).maxTicks(24000)
 
 let hg = {
-    ver: 'v0.3.3-alpha.rev0',
+    ver: 'v0.3.4-alpha.rev0',
     rules: [
         '    #\xa7b1 \xa7f- \xa7bNo spamming\xa7f.',
         '    #\xa7b2 \xa7f- \xa7bNo ragebaiting\xa7f.',
-        '    #\xa7b3 \xa7f- \xa7bNo hacking\xa7f.',
+        '    #\xa7b3 \xa7f- \xa7bHacks are only allowed when you\'re NOT using them for an advantage\xa7f.',
         '    #\xa7b4 \xa7f- \xa7bNo cheating of any kind\xa7f.',
         '    #\xa7b5 \xa7f- \xa7bNo hacked skins of any kind\xa7f.',
         '    #\xa7b6 \xa7f- \xa7bNo brainrot or inappropriate stuff\xa7f.',
@@ -1313,7 +1313,7 @@ let hg = {
                     {
                         text: '\xa7eBasic',
                         id: 'basic',
-                        icon: 'minecraft:shield',
+                        icon: 'minecraft:stone_sword',
                         desc: ['\xa78the default kit'],
                         ench: false,
                         items: [
@@ -3541,10 +3541,10 @@ let hg = {
                                 volume: 1.0
                             })
                             s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     }
                 } catch (err) {
                     s.world.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`)
@@ -3583,12 +3583,12 @@ let hg = {
                                     player.setDynamicProperty('hgncb:random_events.wins'  , wins   + 1)
                                 else
                                     player.setDynamicProperty('hgncb:random_events.losses', losses + 1)
-                            s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer' ) > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     } else if (players_remaining === 0) {
                         for (let player of players_creative) {
                             player.sendMessage(`\xa7eGame \xa7i» \xa7eIt\'s a tie!`)
@@ -3600,12 +3600,12 @@ let hg = {
                             let losses = player.getDynamicProperty('hgncb:random_events.losses') ?? 0
                             if (player.getGameMode() !== 'Creative')
                                 player.setDynamicProperty('hgncb:random_events.losses', losses + 1)
-                            s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer') > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     } else if (time_left <= 0) {
                         for (let player of players_creative) {
                             player.sendMessage(`\xa7eGame \xa7i» \xa7eTime\'s up!`)
@@ -3617,12 +3617,12 @@ let hg = {
                             let losses = player.getDynamicProperty('hgncb:random_events.losses') ?? 0
                             if (player.getGameMode() !== 'Creative')
                                 player.setDynamicProperty('hgncb:random_events.losses', losses + 1)
-                            s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer') > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.random_events.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.random_events.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     } else {
                         if (time_left % 200 === 0) {
                             this.methods.playRandomEvent()
@@ -4045,10 +4045,10 @@ let hg = {
                                 volume: 1.0
                             })
                             s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     }
                 } catch (err) {
                     s.world.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`)
@@ -4082,12 +4082,12 @@ let hg = {
                                 else if (died)
                                     player.setDynamicProperty('hgncb:duels.losses', losses + 1)
                             }
-                            s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     } else if (players_remaining === 0) {
                         for (let player of players_creative) {
                             player.sendMessage(`\xa7eGame \xa7i» \xa7eIt\'s a tie!`)
@@ -4100,12 +4100,12 @@ let hg = {
                             let not_in_game = !player.hasTag('hgncb:duels.picked')
                             if (player.getGameMode() !== 'Creative' && !not_in_game)
                                 player.setDynamicProperty('hgncb:duels.losses', losses + 1)
-                            s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     } else if (time_left <= 0) {
                         for (let player of players_creative) {
                             player.sendMessage(`\xa7eGame \xa7i» \xa7eTime\'s up!`)
@@ -4118,12 +4118,12 @@ let hg = {
                             let not_in_game = !player.hasTag('hgncb:duels.picked')
                             if (player.getGameMode() !== 'Creative' && !not_in_game)
                                 player.setDynamicProperty('hgncb:duels.losses', losses + 1)
-                            s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
-                            someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
-                            s.system.runTimeout(() => {
-                                this.methods.reset()
-                            }, 80)
                         }
+                        s.world.setDynamicProperty('hgncb:timer.duels.win_timer', 81);
+                        someone_won = s.world.getDynamicProperty('hgncb:timer.duels.win_timer') > 0;
+                        s.system.runTimeout(() => {
+                            this.methods.reset()
+                        }, 80)
                     }
                 }
             },
@@ -4920,202 +4920,6 @@ let hg = {
     systemListeners: {
         beforeEvents: {
             startup: function(e) {
-                let commands = [
-                    // #region commands
-                    {
-                        name: 'help',
-                        desc: 'Shows all of the available commands.',
-                        func: function(a, player) {
-                            try {
-                                let c = a[1]?.trim?.()
-                                if (c) {
-                                    let cmd = commands.find(cmd => `/${cmd.name}` === c || `${cmd.name}` === c);
-                                    player.sendMessage(`\xa7f/\xa7e${cmd.name}\xa7f - \xa7i\xa7o${cmd.desc}\xa7r`);
-                                    cmd.send_usage(player); // send the usage of the command
-                                } else {
-                                    let msg = '\xa7eCommands\xa7f:'
-                                    let msgop = '\xa7eOperator Commands\xa7f:'
-                                    for (let command of commands.filter(cmd => !cmd.requires_op)) {
-                                        msg += `\n    \xa7f/\xa7e${command.name} \xa7i- \xa7i\xa7o${command.desc}\xa7r`;
-                                    }
-                                    for (let command of commands.filter(cmd => cmd.requires_op)) {
-                                        msgop += `\n    \xa7f/\xa7e${command.name} \xa7i- \xa7i\xa7o${command.desc}\xa7r`;
-                                    }
-                                    player.sendMessage(`${msg}${hg.methods.check_op(player) ? '\n' + msgop : ''}`);
-                                }
-                            } catch (err) {
-                                s.world.sendMessage(`\xa7cError \xa7i» \xa7f${err.message}\n${err.stack}`); // send an error message
-                            }
-                        }
-                    },
-                    {
-                        name: 'hub',
-                        desc: 'Sends you to the Hub.',
-                        func: function(a, player) {
-                            try {
-                                let hub = hg.minigames.find(g => g.id === 'hub');
-                                hub.onEnter(player); // teleport the player to the hub
-                            } catch (err) {
-                                s.world.sendMessage(`\xa7cError \xa7i» \xa7f${err.message}\n${err.stack}`); // send an error message
-                            }
-                        }
-                    },
-                    {
-                        name: 'server',
-                        desc: 'Sends you to a specified server.',
-                        func: function(a, player) {
-                            try {
-                                let c = a[1]?.trim?.()
-                                let game = hg.minigames.find(m => m.id === c)
-                                if (!game) {
-                                    player.sendMessage(`\xa7cDenied \xa7i» \xa7cMinigame \xa7i\'\xa7c${c}\xa7i\' \xa7ccurrently does not exist.`)
-                                } else {
-                                    player.sendMessage(`\xa7bInfo \xa7i» \xa7fSending you to minigame \xa7i\'\xa7b${game.id}\xa7i\'...`)
-                                    game.onEnter(player)
-                                }
-                            } catch (err) {
-                                s.world.sendMessage(`\xa7cError \xa7i» \xa7f${err.message}\n${err.stack}`); // send an error message
-                            }
-                        }
-                    },
-                    {
-                        name: 'clearchat',
-                        desc: 'Clears the chat.',
-                        func: function(a, player) {
-                            let c = a[1]?.trim?.()
-
-                            for (let i = 0; i < 100; i++) { // clear the chat by sending a bunch of empty messages
-                                s.world.sendMessage(' ');
-                            }
-                            s.world.sendMessage(`\xa7i\xa7o${player.getDynamicProperty('hgncb:display_name') ?? player.name} has cleared the chat.`);
-                        }
-                    },
-                    {
-                        name: 'rules',
-                        desc: 'Shows the rules of the server.',
-                        func: function(a, player) {
-                            let c = a[1]?.trim?.()
-                            player.sendMessage(`\xa7f---\xa7bRULES\xa7f---` + '\n' + hg.rules.join('\n\xa7r'));
-                        }
-                    },
-                    {
-                        name: 'usersettings',
-                        desc: 'Change your settings.',
-                        func: function(a, player) {
-                            let c = a[1]?.trim?.()
-                            let d = a[2]
-
-                            let defaults = {
-                                enableKitPvpSounds: false
-                            }
-                            if (typeof d === 'undefined') {
-                                player.sendMessage(`\xa7bInfo \xa7i» \xa7fUser setting \'\xa7b${c}\xa7f\' is equal to \xa7b${player.getDynamicProperty(`hgncb:setting.${c}`) ?? defaults[c]}\xa7i.`)
-                            } else {
-                                player.sendMessage(`\xa7bInfo \xa7i» \xa7fChanging user setting \'\xa7b${c}\xa7f\' to \xa7b${d}\xa7i.`)
-                                player.setDynamicProperty(`hgncb:setting.${c}`, d)
-                            }
-                        }
-                    },
-                    {
-                        name: 'debug',
-                        desc: 'Debug options.',
-                        func: function(a, player) {
-                            let
-                                c = a[1]?.trim?.()?.toLowerCase(),
-                                input = a.slice(2).join(' ')
-                            if (!c || c === '') {
-                                player.sendMessage(`\xa7cPlease specify a debug command\xa7f!`);
-                                return;
-                            }
-                            switch (c) {
-                                case 'eval':
-                                    // evaluate javascript code
-                                    try {
-                                        let out = hg.debug.run_thru(input);
-                                        let res = (function(o) {
-                                            if (o === undefined || o === null)
-                                                return '\xa7iundefined\xa7r';
-
-                                            if (typeof o === 'object')
-                                                return JSON.stringify(o, null, 4);
-
-                                            if (typeof o === 'function')
-                                                return o.toString();
-
-                                            if (typeof o === 'string')
-                                                return o;
-
-                                            if (typeof o === 'number')
-                                                return o.toString();
-
-                                            if (typeof o === 'boolean')
-                                                return o ? 'true' : 'false';
-
-                                            return o.toString();
-                                        })(out)
-                                        player.sendMessage('» ' + res)
-                                    } catch (err) {
-                                        player.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
-                                    }
-                                    break;
-                                case 'prop_set':
-                                    // set a dynamic property
-                                    try {
-                                        let args = input.split(' ')
-                                        let prop = args[0]
-                                        let name = args[1]
-                                        let value = isNaN(parseFloat(args.slice(2).join(' '))) ? args.slice(2).join(' ') : parseFloat(args.slice(2).join(' '))
-                                        value = typeof hg.methods.parse_bool(value) !== 'undefined' ? hg.methods.parse_bool(value) : value;
-                                        let player = hg.dimensions.overworld.getPlayers({ name })[0]
-                                        if (player) {
-                                            player.setDynamicProperty(prop, value)
-                                        } else {
-                                            player.sendMessage(`\xa7cThere is no player named \xa7f\'\xa7c${name}\xa7f\'.`);
-                                        }
-                                    } catch (err) {
-                                        player.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
-                                    }
-                                    break;
-                                case 'prop_add':
-                                    // set a dynamic property
-                                    try {
-                                        let args = input.split(' ')
-                                        let prop = args[0]
-                                        let name = args[1]
-                                        let value = isNaN(parseFloat(args[2])) ? args[2] : parseFloat(args[2])
-                                        let player = hg.dimensions.overworld.getPlayers({ name })[0]
-                                        if (player) {
-                                            player.setDynamicProperty(prop, (player.getDynamicProperty(prop) ?? 0) + value)
-                                        } else {
-                                            player.sendMessage(`\xa7cThere is no player named \xa7f\'\xa7c${name}\xa7f\'.`);
-                                        }
-                                    } catch (err) {
-                                        player.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
-                                    }
-                                    break;
-                                case 'no_shop':
-                                    for (let player of s.world.getPlayers()) {
-                                        player?.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
-                                        player?.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
-                                        player?.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
-                                    }
-                                    break;
-                                default:
-                                    player.sendMessage(`\xa7cNo such debug command \xa7f\'\xa7c${c}\xa7f\'\xa7f!`);
-                                    break;
-                            }
-                        }
-                    },
-                    {
-                        name: 'restart',
-                        desc: 'Restarts the server.',
-                        func: function(a, player) {
-                            player.runCommand('kick @a \nThe server is restarting.\nYou can now join back.')
-                            player.runCommand('reload all')
-                        }
-                    },
-                    // #endregion commands
-                ]
                 e.customCommandRegistry.registerEnum('hgncb:setting_type',  ['enableKitPvpSounds'])
                 e.customCommandRegistry.registerEnum('hgncb:debug_command', ['eval', 'prop_set', 'prop_add', 'no_shop'])
                 e.customCommandRegistry.registerEnum('hgncb:server_id', [
@@ -5132,30 +4936,18 @@ let hg = {
                 ])
                 e.customCommandRegistry.registerCommand(
                     {
-                        name: 'hgncb:hghelp',
-                        cheatsRequired: false,
-                        permissionLevel: 0,
-                        description: commands.find(c => c.name === 'help').desc,
-                        optionalParameters: [
-                            {
-                                type: 'String',
-                                name: 'command'
-                            }
-                        ]
-                    },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'help').func([undefined, ...a], origin.sourceEntity))
-                    }
-                )
-                e.customCommandRegistry.registerCommand(
-                    {
                         name: 'hgncb:hub',
                         cheatsRequired: false,
                         permissionLevel: 0,
-                        description: commands.find(c => c.name === 'hub').desc
+                        description: 'Sends you to the server hub.'
                     },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'hub').func([undefined, ...a], origin.sourceEntity))
+                    function(origin) {
+                        try {
+                            let hub = hg.minigames.find(g => g.id === 'hub');
+                            s.system.run(() => hub.onEnter(origin.sourceEntity)); // teleport the player to the hub
+                        } catch (err) {
+                            s.world.sendMessage(`\xa7cError \xa7i» \xa7f${err.message}\n${err.stack}`); // send an error message
+                        }
                     }
                 )
                 e.customCommandRegistry.registerCommand(
@@ -5163,7 +4955,7 @@ let hg = {
                         name: 'hgncb:server',
                         cheatsRequired: false,
                         permissionLevel: 0,
-                        description: commands.find(c => c.name === 'server').desc,
+                        description: 'Sends you to a specified minigame.',
                         mandatoryParameters: [
                             {
                                 type: 'Enum',
@@ -5171,53 +4963,18 @@ let hg = {
                             }
                         ]
                     },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'server').func([undefined, ...a], origin.sourceEntity))
-                    }
-                )
-                e.customCommandRegistry.registerCommand(
-                    {
-                        name: 'hgncb:rules',
-                        cheatsRequired: false,
-                        permissionLevel: 0,
-                        description: commands.find(c => c.name === 'rules').desc
-                    },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'rules').func([undefined, ...a], origin.sourceEntity))
-                    }
-                )
-                e.customCommandRegistry.registerCommand(
-                    {
-                        name: 'hgncb:debug',
-                        cheatsRequired: false,
-                        permissionLevel: 2,
-                        description: commands.find(c => c.name === 'debug').desc,
-                        mandatoryParameters: [
-                            {
-                                type: 'Enum',
-                                name: 'hgncb:debug_command'
+                    function(origin, id) {
+                        try {
+                            let game = hg.minigames.find(m => m.id === id)
+                            if (!game) {
+                                origin.sourceEntity.sendMessage(`\xa7cDenied \xa7i» \xa7cMinigame \xa7i\'\xa7c${c}\xa7i\' \xa7ccurrently does not exist.`)
+                            } else {
+                                origin.sourceEntity.sendMessage(`\xa7bInfo \xa7i» \xa7fSending you to minigame \xa7i\'\xa7b${game.id}\xa7i\'...`)
+                                s.system.run(() => game.onEnter(origin.sourceEntity))
                             }
-                        ],
-                        optionalParameters: [
-                            {
-                                type: 'String',
-                                name: 'args'
-                            }
-                        ]
-                    },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'debug').func([undefined, ...a], origin.sourceEntity))
-                    }
-                )
-                e.customCommandRegistry.registerCommand(
-                    {
-                        name: 'hgncb:restart',
-                        cheatsRequired: false,
-                        permissionLevel: 4,
-                        description: commands.find(c => c.name === 'restart').desc
-                    },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'restart').func([undefined, ...a], origin.sourceEntity))
+                        } catch (err) {
+                            s.world.sendMessage(`\xa7cError \xa7i» \xa7f${err.message}\n${err.stack}`); // send an error message
+                        }
                     }
                 )
                 e.customCommandRegistry.registerCommand(
@@ -5225,10 +4982,13 @@ let hg = {
                         name: 'hgncb:clearchat',
                         cheatsRequired: false,
                         permissionLevel: 1,
-                        description: commands.find(c => c.name === 'clearchat').desc
+                        description: 'Clears the chat'
                     },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'clearchat').func([undefined, ...a], origin.sourceEntity))
+                    function(origin) {
+                        for (let i = 0; i < 100; i++) { // clear the chat by sending a bunch of empty messages
+                            s.world.sendMessage(' ');
+                        }
+                        s.world.sendMessage(`\xa7i\xa7o${origin.sourceEntity.getDynamicProperty('hgncb:display_name') ?? origin.sourceEntity.name} has cleared the chat.`);
                     }
                 )
                 e.customCommandRegistry.registerCommand(
@@ -5236,7 +4996,7 @@ let hg = {
                         name: 'hgncb:usersettings',
                         cheatsRequired: false,
                         permissionLevel: 0,
-                        description: commands.find(c => c.name === 'usersettings').desc,
+                        description: 'Change your settings.',
                         mandatoryParameters: [
                             {
                                 type: 'Enum',
@@ -5250,8 +5010,138 @@ let hg = {
                             }
                         ]
                     },
-                    function(origin, ...a) {
-                        s.system.run(() => commands.find(c => c.name === 'usersettings').func([undefined, ...a], origin.sourceEntity))
+                    function(origin, setting, value) {
+                        let defaults = {
+                            enableKitPvpSounds: false
+                        }
+                        if (typeof value === 'undefined') {
+                            origin.sourceEntity.sendMessage(`\xa7bInfo \xa7i» \xa7fUser setting \'\xa7b${setting}\xa7f\' is equal to \xa7b${origin.sourceEntity.getDynamicProperty(`hgncb:setting.${setting}`) ?? defaults[setting]}\xa7i.`)
+                        } else {
+                            origin.sourceEntity.sendMessage(`\xa7bInfo \xa7i» \xa7fChanging user setting \'\xa7b${setting}\xa7f\' to \xa7b${value}\xa7i.`)
+                            origin.sourceEntity.setDynamicProperty(`hgncb:setting.${setting}`, value)
+                        }
+                    }
+                )
+                e.customCommandRegistry.registerCommand(
+                    {
+                        name: 'hgncb:rules',
+                        cheatsRequired: false,
+                        permissionLevel: 0,
+                        description: 'Shows the server rules.'
+                    },
+                    function(origin) {
+                        origin.sourceEntity.sendMessage(`\xa7f---\xa7bRULES\xa7f---` + '\n' + hg.rules.join('\n\xa7r'));
+                    }
+                )
+                e.customCommandRegistry.registerCommand(
+                    {
+                        name: 'hgncb:debug',
+                        cheatsRequired: false,
+                        permissionLevel: 2,
+                        description: 'Administrator debug options.',
+                        mandatoryParameters: [
+                            {
+                                type: 'Enum',
+                                name: 'hgncb:debug_command'
+                            }
+                        ],
+                        optionalParameters: [
+                            {
+                                type: 'String',
+                                name: 'args'
+                            }
+                        ]
+                    },
+                    function(origin, c, input) {
+                        if (!c || c === '') {
+                            origin.sourceEntity.sendMessage(`\xa7cPlease specify a debug command\xa7f!`);
+                            return;
+                        }
+                        switch (c) {
+                            case 'eval':
+                                // evaluate javascript code
+                                try {
+                                    let out = hg.debug.run_thru(input);
+                                    let res = (function(o) {
+                                        if (o === undefined || o === null)
+                                            return '\xa7iundefined\xa7r';
+                                        if (typeof o === 'object')
+                                            return JSON.stringify(o, null, 4);
+                                        if (typeof o === 'function')
+                                            return o.toString();
+                                        if (typeof o === 'string')
+                                            return o;
+                                        if (typeof o === 'number')
+                                            return o.toString();
+                                        if (typeof o === 'boolean')
+                                            return o ? 'true' : 'false';
+                                        return o.toString();
+                                    })(out)
+                                    origin.sourceEntity.sendMessage('» ' + res)
+                                } catch (err) {
+                                    origin.sourceEntity.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
+                                }
+                                break;
+                            case 'prop_set':
+                                // set a dynamic property
+                                try {
+                                    let args = input.split(' ')
+                                    let prop = args[0]
+                                    let name = args[1]
+                                    let value = isNaN(parseFloat(args.slice(2).join(' '))) ? args.slice(2).join(' ') : parseFloat(args.slice(2).join(' '))
+                                    value = typeof hg.methods.parse_bool(value) !== 'undefined' ? hg.methods.parse_bool(value) : value;
+                                    let player = hg.dimensions.overworld.getPlayers({ name })[0]
+                                    if (player) {
+                                        player.setDynamicProperty(prop, value)
+                                    } else {
+                                        origin.sourceEntity.sendMessage(`\xa7cThere is no player named \xa7f\'\xa7c${name}\xa7f\'.`);
+                                    }
+                                } catch (err) {
+                                    origin.sourceEntity.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
+                                }
+                                break;
+                            case 'prop_add':
+                                // set a dynamic property
+                                try {
+                                    let args = input.split(' ')
+                                    let prop = args[0]
+                                    let name = args[1]
+                                    let value = isNaN(parseFloat(args[2])) ? args[2] : parseFloat(args[2])
+                                    let player = hg.dimensions.overworld.getPlayers({ name })[0]
+                                    if (player) {
+                                        player.setDynamicProperty(prop, (player.getDynamicProperty(prop) ?? 0) + value)
+                                    } else {
+                                        origin.sourceEntity.sendMessage(`\xa7cThere is no player named \xa7f\'\xa7c${name}\xa7f\'.`);
+                                    }
+                                } catch (err) {
+                                    origin.sourceEntity.sendMessage(`\xa7cError \xa7i» \xa7r${err}\n${err.stack}`);
+                                }
+                                break;
+                            case 'no_shop':
+                                for (let player of s.world.getPlayers()) {
+                                    player?.setDynamicProperty('hgncb:kitpvp.is_shopping', false)
+                                    player?.setDynamicProperty('hgncb:kitpvp.is_viewing_leaderboard', false)
+                                    player?.setDynamicProperty('hgncb:kitpvp.is_selecting_kit', false)
+                                }
+                                break;
+                            default:
+                                origin.sourceEntity.sendMessage(`\xa7cNo such debug command \xa7f\'\xa7c${c}\xa7f\'\xa7f!`);
+                                break;
+                        }
+                    }
+                )
+                e.customCommandRegistry.registerCommand(
+                    {
+                        name: 'hgncb:restart',
+                        cheatsRequired: false,
+                        permissionLevel: 4,
+                        description: 'Restarts the server.'
+                    },
+                    function(origin) {
+                        s.system.run(() => {
+                            origin.sourceEntity.runCommand('kick @a \nThe server is restarting.\nYou can now join back.')
+                            origin.sourceEntity.runCommand('reload all')
+                        })
                     }
                 )
             }

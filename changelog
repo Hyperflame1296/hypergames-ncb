@@ -61,19 +61,23 @@
 - increased gravity on all projectiles
 - server relies on Date.now() more than system.currentTick
 - disabled Shared Packs!
+- completely refactored commands
 ### KitPVP
 - replaced the Fishing Rod with Snowballs in the Flash kit
 - increased the mace AoE knockback
 - replaced the damage splash potion in the Alchemist kit with a lingering potion
 - reduced the gapple cooldown
+- change the Basic kit icon from a Shield to a Stone Sword
 - added the Puffer kit!
     this kit has a Pufferfish bucket, which has a cooldown of 7.5 seconds  
     when used, it spawns a Pufferfish that inflicts poison, and constantly deals 3 thorns damage in a 3 block radius  
     the pufferfish dissapears after 5 seconds
 - added a 20-tick window where you cannot select a kit
 - fixed incorrect colors on level up title
+- added particles when a player dies
 ### Random Events
 - fixed a bug where you could still gain losses in Creative
+- fixed a bug where it would reset for each player
 ### Duels
 - added the Duels minigame!
 # v0.3.4-alpha.rev0 changelog:
