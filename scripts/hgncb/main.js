@@ -280,6 +280,7 @@ let hg = {
                             game.methods.playerDie(attacker, target, method)
                             break
                         case 'duels':
+                            game.methods.playerDie(undefined, target, method)
                             break
                         default:
                             break
@@ -4291,7 +4292,7 @@ let hg = {
                         return
                     }
                     if (e.message.includes(':help:')) {
-                        if (e.sender.hasTag('hgncb:mute.emote')) {
+                        if (e.sender.hasTag('hgncb:mute.emoticon')) {
                             e.sender.sendMessage(`\xa7cYou are banned from using emoticons\xa7f!`)
                             return
                         }
@@ -4304,7 +4305,7 @@ let hg = {
                         return
                     }
                     let msg = e.message
-                    if (!e.sender.hasTag('hgncb:mute.emote'))
+                    if (!e.sender.hasTag('hgncb:mute.emoticon'))
                         for (let em of Object.keys(hg.emoticons)) {
                             msg = msg.replaceAll(`:${em}:`, hg.emoticons[em])
                         }
@@ -4723,7 +4724,7 @@ let hg = {
                         })
                     }, 120)
                     s.system.runTimeout(() => {
-                        player.sendMessage("\xa7bInfo \xa7i» \xa7fPlease download the resource packs if you haven't already - HyperGames requires them!")
+                        player.sendMessage("\xa7c\xa7lIMPORTANT! \xa7i» \xa7fPLEASE download the resource packs if you haven't already - HyperGames requires them!")
                         player.playSound('random.pop', {
                             pitch: 1.0,
                             volume: 1.0
@@ -4861,13 +4862,14 @@ let hg = {
                 e.cancel = true
                 s.world.sendMessage('\xa7cWoah woah woah, the server almost crashed!\xa7r\n\xa7i    - \xa7fTo hopefully fix this, all players will have their tags remove and be sent to the lobby.')
                 for (let player of s.world.getAllPlayers()) {
-                    if (!player || !player.isValid) {
-                        for (let tag of player.getTags()) {
-                            if (!tag.startsWith('hgncb:mute.'))
-                                player.removeTag(tag)
-                        }
-                        hg.minigames.find((m) => m.id == 'hub').onEnter(player)
+                    if (!player || !player.isValid)
+                        return
+
+                    for (let tag of player.getTags()) {
+                        if (!tag.startsWith('hgncb:mute.'))
+                            player.removeTag(tag)
                     }
+                    hg.minigames.find((m) => m.id == 'hub').onEnter(player)
                 }
             },
             startup: function (e) {

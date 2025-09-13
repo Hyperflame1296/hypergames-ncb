@@ -91,3 +91,4 @@
 - change the Basic kit icon from a Shield to a Stone Sword
 ### Duels
 - fixed a bug where you could use items before the game started
+- fixed a bug where using a bow caused the player to just respawn instead of winning the game
